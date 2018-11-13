@@ -5,10 +5,8 @@ This is the [Flask](http://flask.pocoo.org/) [quickstart example](http://flask.p
 The app in this repo is deployed at [https://flask.app.render.com](https://flask.app.render.com).
 
 ## Deployment
-1. Create a new Render project using your version of this repo.
-
-2. Create a new web service in the project with the following values:
-    * Build Command: `pip install -r requirements.txt`
-    * Start Command: `gunicorn app:app`
+Create a new web service in Render with your version of this repo and the following values:
+  * Build Command: `pip install -r requirements.txt`
+  * Start Command: `gunicorn app:app`
 
 That's it! Your web service will be live on your Render URL as soon as the build finishes.
