@@ -2,12 +2,12 @@
 
 You'll need to make sure that you have Python >= 3.6 and virtualenv installed
 
-pip3 install virtualenv
-virtualenv -p python3 .env
-source .env/bin/activate
-pip3 install -r requirements.txt
+pip3 install virtualenv   
+virtualenv -p python3 .env   
+source .env/bin/activate   
+pip3 install -r requirements.txt   
 
-gunicorn app:app
+gunicorn app:app   
 
 ## Deployment
 
