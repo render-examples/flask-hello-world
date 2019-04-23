@@ -1,9 +1,14 @@
 # README
 
-This is the [Flask](http://flask.pocoo.org/) [quick start](http://flask.pocoo.org/docs/1.0/quickstart/#a-minimal-application) example for [Render](https://render.com).
+You'll need to make sure that you have Python >= 3.6 and virtualenv installed
 
-The app in this repo is deployed at [https://flask.onrender.com](https://flask.onrender.com).
+pip3 install virtualenv
+virtualenv -p python3 .env
+source .env/bin/activate
+pip3 install -r requirements.txt
+
+gunicorn app:app
 
 ## Deployment
 
-Follow the guide at https://render.com/docs/deploy-flask.
+The app deploys on every push to master.  We do automatically make sure that the /ping route works before marking the deploy successful.
