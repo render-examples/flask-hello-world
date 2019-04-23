@@ -6,24 +6,38 @@ from pathlib import Path
 from fastai import *
 from fastai.text import *
 import os
+import boto3
+from flask import abort
 
-download_models()
-
-async def download_models():
+def download_models():
     print('Downloading models')
     aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
-    s3.download_file('talkhiring-models','star_interview_model.pkl','/models')
+    
+    if not os.path.exists('models/'):
+        os.makedirs('models/')
+    
+    s3.download_file('talkhiring-models','star_interview_model.pkl','models/star_interview_model.pkl')
     print('Downloaded models')
 
-@app.route('/predictor/classifySTAR', methods=['POST'])
-def classifySTAR():
+@app.route('/textClassifier/classifySTAR', methods=['POST'])
+def classifySTARRoute():
     input_text = request.get_json().get('text')
-    learner = load_learner(PATH_TO_MODELS_DIR, 'star_interview_model.pkl')
-    pred_class, pred_idx, losses = self.learner.predict(input_text)
+    return classifySTAR(input_text)
+
+def classifySTAR(text):
+    learner = load_learner('models/', 'star_interview_model.pkl')
+    pred_class, pred_idx, losses = learner.predict(text)
     return { 'prediction': str(pred_class), 'confidence': float(max(to_np(losses))) }
 
 @app.route('/ping', methods=['GET'])
 def ping():
-    return 'OK'
+    result = classifySTAR('ricky bobby')
+    if result['prediction'] == 'Yes' or result['prediction'] == 'No':
+        return 'OK'
+    else:
+        print('Ping result', result)
+        return abort(500)
+        
+download_models()
