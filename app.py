@@ -8,6 +8,7 @@ from fastai.text import *
 import os
 import boto3
 from flask import abort
+from flask import jsonify
 
 def download_models():
     print('Downloading models')
@@ -17,14 +18,18 @@ def download_models():
     
     if not os.path.exists('models/'):
         os.makedirs('models/')
-    
+    exists = os.path.isfile('models/star_interview_model.pkl')
+    if exists:
+        print('Model already downloaded.  Not downloading')
+        return
+
     s3.download_file('talkhiring-models','star_interview_model.pkl','models/star_interview_model.pkl')
     print('Downloaded models')
 
 @app.route('/textClassifier/classifySTAR', methods=['POST'])
 def classifySTARRoute():
     input_text = request.get_json().get('text')
-    return classifySTAR(input_text)
+    return jsonify(classifySTAR(input_text))
 
 def classifySTAR(text):
     learner = load_learner('models/', 'star_interview_model.pkl')
