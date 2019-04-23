@@ -1,2 +1,6 @@
+boto
+virtualenv
+fastai
+torchvision
 Flask
 Gunicorn
