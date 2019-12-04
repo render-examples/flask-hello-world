@@ -21,16 +21,16 @@ def download_models():
 
     list_of_model_file_paths = [
         'models/star_interview_model.pkl',
-        'models/concision_interview_model.pkl'
+        'models/concision_model.pkl'
     ]
 
     for model_path in list_of_model_file_paths:
         exists = os.path.isfile(model_path)
         if exists:
             print('Model already downloaded.  Not downloading')
-            return
-
-    s3.download_file('talkhiring-models','star_interview_model.pkl','models/star_interview_model.pkl', 'models/concision_interview_model.pkl')
+        else:
+            file_name = model_path.split('/')[1]
+            s3.download_file('talkhiring-models', file_name, model_path)
     print('Downloaded models')
 
 @app.route('/textClassifier/classifySTAR', methods=['POST'])
@@ -44,9 +44,10 @@ def classifyConcisionRoute():
     return jsonify(classifyConcision(input_text))
 
 def classifyConcision(text):
-    learner = load_learner('models/', 'concision_interview_model.pkl')
+    learner = load_learner('models/', 'concision_model.pkl')
     pred_class, pred_idx, losses = learner.predict(text)
-    return { 'label': str(pred_class), 'confidence': float(max(to_np(losses))) }
+    print('NEW CONCISION PREDICTION', str(pred_class), float(max(to_np(losses))), text)
+    return { 'prediction': str(pred_class), 'confidence': float(max(to_np(losses))) }
 
 def classifySTAR(text):
     learner = load_learner('models/', 'star_interview_model.pkl')
