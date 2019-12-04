@@ -46,7 +46,6 @@ def classifyConcisionRoute():
 def classifyConcision(text):
     learner = load_learner('models/', 'concision_model.pkl')
     pred_class, pred_idx, losses = learner.predict(text)
-    print('NEW CONCISION PREDICTION', str(pred_class), float(max(to_np(losses))), text)
     return { 'prediction': str(pred_class), 'confidence': float(max(to_np(losses))) }
 
 def classifySTAR(text):
