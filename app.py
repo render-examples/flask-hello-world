@@ -18,18 +18,35 @@ def download_models():
     
     if not os.path.exists('models/'):
         os.makedirs('models/')
-    exists = os.path.isfile('models/star_interview_model.pkl')
-    if exists:
-        print('Model already downloaded.  Not downloading')
-        return
 
-    s3.download_file('talkhiring-models','star_interview_model.pkl','models/star_interview_model.pkl')
+    list_of_model_file_paths = [
+        'models/star_interview_model.pkl',
+        'models/concision_interview_model.pkl'
+    ]
+
+    for model_path in list_of_model_file_paths:
+        exists = os.path.isfile(model_path)
+        if exists:
+            print('Model already downloaded.  Not downloading')
+            return
+
+    s3.download_file('talkhiring-models','star_interview_model.pkl','models/star_interview_model.pkl', 'models/concision_interview_model.pkl')
     print('Downloaded models')
 
 @app.route('/textClassifier/classifySTAR', methods=['POST'])
 def classifySTARRoute():
     input_text = request.get_json().get('text')
     return jsonify(classifySTAR(input_text))
+
+@app.route('/textClassifier/classifyConcision', methods=['POST'])
+def classifyConcisionRoute():
+    input_text = request.get_json().get('text')
+    return jsonify(classifyConcision(input_text))
+
+def classifyConcision(text):
+    learner = load_learner('models/', 'concision_interview_model.pkl')
+    pred_class, pred_idx, losses = learner.predict(text)
+    return { 'label': str(pred_class), 'confidence': float(max(to_np(losses))) }
 
 def classifySTAR(text):
     learner = load_learner('models/', 'star_interview_model.pkl')
@@ -39,6 +56,13 @@ def classifySTAR(text):
 @app.route('/ping', methods=['GET'])
 def ping():
     result = classifySTAR('ricky bobby')
+    if result['prediction'] == 'Yes' or result['prediction'] == 'No':
+        pass
+    else:
+        print('Ping result', result)
+        return abort(500)
+
+    result = classifyConcision('ricky bobby')
     if result['prediction'] == 'Yes' or result['prediction'] == 'No':
         return 'OK'
     else:
