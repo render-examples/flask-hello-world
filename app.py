@@ -45,6 +45,11 @@ def classifyConcisionRoute():
 
 def classifyConcision(text):
     learner = load_learner('models/', 'concision_model.pkl')
+    # if recordings are on the shorter side, assume that they are always concise
+    # otherwise, sometimes for very short recordings, we say that they are rambling when that does not make sense
+    # Harris did an analysis and found that, for recordings of 30 seconds or less, the 3rd quartile transcription length was 55
+    if len(text) < 55:
+        return { 'prediction': 'Yes', 'confidence': 1.0 }
     pred_class, pred_idx, losses = learner.predict(text)
     return { 'prediction': str(pred_class), 'confidence': float(max(to_np(losses))) }
 
