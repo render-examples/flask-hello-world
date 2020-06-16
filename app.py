@@ -50,13 +50,33 @@ def calculate_pitch():
 
     # Convert the NumPy array into a list, then encode as JSON to send back
     converted_from_numpy_array_to_list = list(pitch_track)
-    filtered_out_zeroes = [n for n in converted_from_numpy_array_to_list if n != 0]
+    filtered_out_zeroes_and_negatives = [n for n in converted_from_numpy_array_to_list if n > 0]
     
-    q75, q25 = numpy.percentile(filtered_out_zeroes, [75 ,25])
+    q75, q25 = numpy.percentile(filtered_out_zeroes_and_negatives, [75 ,25])
     iqr = q75 - q25
+    print('Returing pitch prediction for url' + recording_url)
     return jsonify({
         'IQR': iqr,
-        'median': list(numpy.percentile(filtered_out_zeroes, [50]))
+        'median': list(numpy.percentile(filtered_out_zeroes_and_negatives, [50]))
+    })
+
+@app.route('/presentation/volume', methods=['POST'])
+def calculate_volume():
+    recording_url = request.get_json().get('recording_url')
+
+    # Save the file that was sent, and read it into a parselmouth.Sound
+    with tempfile.NamedTemporaryFile() as tmp:
+        tmp.write(requests.get(recording_url).content)
+        sound = parselmouth.Sound(tmp.name)
+
+    # Calculate the intensity with Parselmouth
+    intensity = sound.to_intensity()
+    # parselmouth.Intensity.AveragingMethod.DB puts the output in decibels
+    average_intensity = intensity.get_average(averaging_method=parselmouth.Intensity.AveragingMethod.DB)
+
+    print('Returing volume prediction for url' + recording_url)
+    return jsonify({
+        'volume': average_intensity
     })
 
 @app.route('/textClassifier/classifySTAR', methods=['POST'])
