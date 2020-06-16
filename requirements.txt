@@ -4,3 +4,4 @@ fastai
 torchvision
 Flask
 Gunicorn
+praat-parselmouth

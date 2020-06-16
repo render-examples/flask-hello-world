@@ -9,6 +9,9 @@ import os
 import boto3
 from flask import abort
 from flask import jsonify
+import tempfile
+import numpy
+import parselmouth
 
 def download_models():
     print('Downloading models')
@@ -32,6 +35,29 @@ def download_models():
             file_name = model_path.split('/')[1]
             s3.download_file('talkhiring-models', file_name, model_path)
     print('Downloaded models')
+
+@app.route('/presentation/pitch', methods=['POST'])
+def calculate_pitch():
+    recording_url = request.get_json().get('recording_url')
+
+    # Save the file that was sent, and read it into a parselmouth.Sound
+    with tempfile.NamedTemporaryFile() as tmp:
+        tmp.write(requests.get(recording_url).content)
+        sound = parselmouth.Sound(tmp.name)
+
+    # Calculate the pitch track with Parselmouth
+    pitch_track = sound.to_pitch().selected_array['frequency']
+
+    # Convert the NumPy array into a list, then encode as JSON to send back
+    converted_from_numpy_array_to_list = list(pitch_track)
+    filtered_out_zeroes = [n for n in converted_from_numpy_array_to_list if n != 0]
+    
+    q75, q25 = numpy.percentile(filtered_out_zeroes, [75 ,25])
+    iqr = q75 - q25
+    return jsonify({
+        'IQR': iqr,
+        'median': list(numpy.percentile(filtered_out_zeroes, [50]))
+    })
 
 @app.route('/textClassifier/classifySTAR', methods=['POST'])
 def classifySTARRoute():
