@@ -37,9 +37,11 @@ def download_models():
     print('Downloaded models')
 
 @app.route('/presentation/pitch', methods=['POST'])
-def calculate_pitch():
+def calculatePitchRoute():
     recording_url = request.get_json().get('recording_url')
+    return jsonify(calculatePitch(recordingUrl))
 
+def calculatePitch(recording_url):
     # Save the file that was sent, and read it into a parselmouth.Sound
     with tempfile.NamedTemporaryFile() as tmp:
         tmp.write(requests.get(recording_url).content)
@@ -47,23 +49,22 @@ def calculate_pitch():
 
     # Calculate the pitch track with Parselmouth
     pitch_track = sound.to_pitch().selected_array['frequency']
-
     # Convert the NumPy array into a list, then encode as JSON to send back
     converted_from_numpy_array_to_list = list(pitch_track)
     filtered_out_zeroes_and_negatives = [n for n in converted_from_numpy_array_to_list if n > 0]
     
     q75, q25 = numpy.percentile(filtered_out_zeroes_and_negatives, [75 ,25])
     iqr = q75 - q25
-    print('Returing pitch prediction for url' + recording_url)
-    return jsonify({
-        'IQR': iqr,
-        'median': list(numpy.percentile(filtered_out_zeroes_and_negatives, [50]))
-    })
+    return {
+        'pitch_variation': iqr
+    }
 
 @app.route('/presentation/volume', methods=['POST'])
-def calculate_volume():
+def calculateVolumeRoute():
     recording_url = request.get_json().get('recording_url')
+    jsonify(calculateVolume(recording_url))
 
+def calculateVolume(recording_url):
     # Save the file that was sent, and read it into a parselmouth.Sound
     with tempfile.NamedTemporaryFile() as tmp:
         tmp.write(requests.get(recording_url).content)
@@ -73,11 +74,9 @@ def calculate_volume():
     intensity = sound.to_intensity()
     # parselmouth.Intensity.AveragingMethod.DB puts the output in decibels
     average_intensity = intensity.get_average(averaging_method=parselmouth.Intensity.AveragingMethod.DB)
-
-    print('Returing volume prediction for url' + recording_url)
-    return jsonify({
-        'volume': average_intensity
-    })
+    return {
+        'average_volume': average_intensity
+    }
 
 @app.route('/textClassifier/classifySTAR', methods=['POST'])
 def classifySTARRoute():
@@ -110,14 +109,26 @@ def ping():
     if result['prediction'] == 'Yes' or result['prediction'] == 'No':
         pass
     else:
-        print('Ping result', result)
+        print('Ping result classifySTAR', result)
         return abort(500)
 
     result = classifyConcision('ricky bobby')
     if result['prediction'] == 'Yes' or result['prediction'] == 'No':
+        pass
+    else:
+        print('Ping result classifyConcision', result)
+        return abort(500)
+
+    result = calculateVolume('https://api.twilio.com/2010-04-01/Accounts/ACc843a910f684a2588e604e81a4f73430/Recordings/RE834dca03d5414851a691b8b462f5981b.mp3')
+    if result['average_volume'] > 50 and result['average_volume'] < 55:
+        pass
+    else:
+        print('Ping result calculateVolume')
+
+    result = calculatePitch('https://api.twilio.com/2010-04-01/Accounts/ACc843a910f684a2588e604e81a4f73430/Recordings/RE834dca03d5414851a691b8b462f5981b.mp3')
+    if result['pitch_variation'] > 10 and result['pitch_variation'] < 15:
         return 'OK'
     else:
-        print('Ping result', result)
-        return abort(500)
+        print('Ping result calculatePitch')
         
 download_models()
