@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Livvic:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icon.png') }}" />
+
+    <title>{% block main_title %}{% endblock %}Dandelion</title>
+    <style type="text/css">
+    * {
+        font-family: 'Livvic', sans-serif;
+        color: #3B4252;
+    }
+
+    body {
+        background: #ECEFF4;
+    }
+
+    a:link {
+        color: #4C566A;
+    }
+
+    a:hover, a:visited, a:active {
+        color: #5E81AC;
+    }
+
+    .content a, h4.loop a:hover {
+        text-decoration: underline;
+    }
+
+    div.content-body p:first-child {
+        font-weight: bold;
+    }
+    h1 img {
+        width: 35px;
+        max-height: auto;
+    }
+
+    h1 a {
+        color: #2E3440;
+        font-weight: 900;
+        letter-spacing: -1.5px;
+    }
+
+    h1 a:hover, h1 a:visited, h4.loop a {
+        text-decoration: none;
+        color: #434C5E;
+    }
+
+    h4, h2, h5 {
+        font-weight: 600;
+        letter-spacing: -1px;
+    }
+
+body.index div.sidebar div.posts {
+    display: none;
+}
+
+    </style>
+  </head>
+{% block body_class %}{% endblock %}
+
+<div class="container-md">
+<div class="row">
+    <div class="col site-header">
+        <h1 class="mt-4 mb-4">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/icon.png') }}" class="mb-2">
+                Dandelion
+            </a>
+            <small>
+                Home education for the rest of us
+            </small>
+        </h1>
+        <hr>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-sm main-menu sidebar">
+
+        <div class="pages">
+
+    <!-- pages -->
+{% for page in page_loop %}
+<h5>
+    {% if active_page != page["item_id"] %}
+        <a href="{{ config.BASE_URL }}/page/{{ page["item_id"] }}">
+    {% endif %}
+        {{ page["title"] }}
+    {% if active_page != page["item_id"] %}
+        </a>
+    {% endif %}
+</h5>
+{% endfor %}
+</div>
+<div class="posts">
+<!-- latest posts -->
+<h5>Latest Posts</h5>
+
+
+{% for post in (post_loop|sort(attribute='date', reverse = True))[:10] %}
+
+{% if active_page != post["item_id"] %}
+<h6 class="mb-4">
+    <a href="{{ config.BASE_URL }}/page/{{ post["item_id"] }}">
+    {{ post["title"] }}
+    </a>
+    ({{ post.date.strftime('%-d %B %Y') }})
+    </h6>
+{% endif %}
+
+{% endfor %}
+</div>
+<div class="downloads">
+<h5>Downloads</h5>
+<!-- downloads -->
+<ul>
+{% for download in (download_loop|sort(attribute='date', reverse = True))[:10] %}
+
+{% if active_page != download["item_id"] %}
+<li><a href="{{ config.BASE_URL }}/download/{{ download["item_id"] }}">{{ download["title"] }}</a> ({{ download.date.strftime('%-d %B %Y') }})</li>
+{% endif %}
+{% endfor %}
+</ul>
+</div>
+
+    </div>
+    <div class="col-sm-6 content">
+        <div class="content-header mb-4">
+            {% block header %}{% endblock %}
+        </div>
+        <div class="content-body">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <div class="col-sm content_menu sidebar">
+        <!-- links -->
+        <div class="links">
+<h5>Latest Links</h5>
+<p>Links with &#10036; contain topical information that you might want to check out.</p>
+{% for link in (link_loop|sort(attribute='date', reverse = True))[:10] %}
+<h6 class="mb-4"><a href="{{ link["text"] }}">{{ link["title"] }}</a> ({{ link.date.strftime('%-d %B %Y') }})</h6>
+
+{% endfor %}
+</div>
+    </div>
+  </div>
+  <div class="row footer mb-4 mt-4"><div class="col">
+      <hr>
+      <small>&copy; 2020 Mary-Ann Horley</small>
+
+  </div></div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  </body>
+</html>

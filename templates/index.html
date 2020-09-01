@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% set active_page = "index" %}
+
+{% block main_title %}
+{% endblock %}
+
+{% block body_class %}
+<body class="index">
+{% endblock %}
+
+
+{% block content %}
+
+{% for post in (post_loop|sort(attribute='date', reverse = True))[:10] %}
+<div class="row loop mb-4">
+<div class="col-3 image">
+    <a href="{{ config.BASE_URL }}/post/{{ post["item_id"] }}">
+        <img src="{{ post["image"] }}" class="img-fluid rounded border" alt="{{ post["title"] }}">
+    </a>
+</div>
+<div class="col-9 post">
+<h4 class="loop">
+    <a href="{{ config.BASE_URL }}/post/{{ post["item_id"] }}">
+        {{ post["title"] }}
+    </a>
+    <small>{{ post.date.strftime('%-d %B %Y') }}</small>
+    </h4>
+</div>
+</div>
+{% endfor %}
+
+
+{% endblock %}

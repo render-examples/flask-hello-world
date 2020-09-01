@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% set active_page = post_id %}
+
+{% block main_title %}
+    {{ content["name"] }} -
+{% endblock %}
+
+
+{% block body_class %}
+<body class="post">
+{% endblock %}
+
+{% block header %}
+    <h2>
+        {{ content["name"] }}
+        <small>{{ date_text }}</small>
+    </h2>
+    <img src="{{ attachments[0]["url"] }}" class="img-fluid rounded border" alt="{{ content["name"] }}">
+    {% if meta[0]["value"]["text"] %}
+        <small>
+            Photo by <a href="{{ meta[0]["value"]["text"] }}">{{ meta[1]["value"]["text"] }}</a>
+        </small>
+    {% endif %}
+{% endblock %}
+
+
+
+
+{% block content %}
+{{ text|safe }}
+{% endblock %}
