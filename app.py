@@ -174,7 +174,9 @@ def backtest_ifr2(ticker):
         ["Open", "High", "Close", "Adj Close"]
     ]
     df["IFR2"] = rsi(df, column="Adj Close")
-    entry = int(request.args.get("entry"))
+    entry = (
+        None if request.args.get("entry") is None else int(request.args.get("entry"))
+    )
     df = strategy_points(data=df, rsi_parameter=entry)
     all_profits, total_capital = backtest_algorithm(df)
     statistics = strategy_test(all_profits, total_capital)
