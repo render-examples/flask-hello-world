@@ -1,2 +1,5 @@
 Flask
 Gunicorn
+yfinance
+numpy
+pandas
