@@ -132,3 +132,11 @@ def strategy_test(all_profits, total_capital):
         "pct_profit": pct_profit,
         "drawdown": drawdown,
     }
+
+
+def get_ibov_tickers():
+    url = "http://bvmf.bmfbovespa.com.br/indices/ResumoCarteiraTeorica.aspx?Indice=IBOV&amp;idioma=pt-br"
+    html = pd.read_html(url, decimal=",", thousands=".", index_col="Código")[0][:-1]
+    tickers = (html.index + ".SA").to_list()
+    return tickers
+

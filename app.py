@@ -3,8 +3,13 @@ import yfinance as yf
 from flask import Response, request, jsonify
 from markupsafe import escape
 from datetime import date, datetime, timedelta
-from utils import rsi, strategy_points, strategy_test, backtest_algorithm
-
+from utils import (
+    get_ibov_tickers,
+    rsi,
+    strategy_points,
+    strategy_test,
+    backtest_algorithm,
+)
 
 app = Flask(__name__)
 
@@ -52,3 +57,30 @@ def backtest_ifr2(ticker):
     statistics = strategy_test(all_profits, total_capital)
 
     return jsonify(statistics)
+
+
+@app.route("/ifr2")
+def api():
+    tickers = get_ibov_tickers()
+
+    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
+    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
+    df = yf.download(tickers, start=start, end=end).copy()[
+        ["Open", "High", "Adj Close"]
+    ]
+
+    df.columns = [" ".join(col).strip() for col in df.columns.values]
+
+    all_rsi = {}
+    for ticker in tickers:
+        new_df = df[["Open " + ticker, "High " + ticker, "Adj Close " + ticker]].rename(
+            columns={
+                "Open " + ticker: "Open",
+                "High " + ticker: "High",
+                "Adj Close " + ticker: "Adj Close",
+            }
+        )
+
+        all_rsi[ticker] = int(round(rsi(new_df, "Adj Close", 2)[-1]))
+
+    return jsonify(all_rsi)
