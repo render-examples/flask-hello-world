@@ -63,7 +63,7 @@ def backtest_ifr2(ticker):
 def api():
     tickers = get_ibov_tickers()
 
-    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
+    start = (datetime.today() - timedelta(days=80)).strftime("%Y-%m-%d")
     end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
     df = yf.download(tickers, start=start, end=end).copy()[
         ["Open", "High", "Adj Close"]
@@ -86,11 +86,18 @@ def api():
         price = new_df["Adj Close"][-1]
         upside = ((target - price) / price) * 100
 
+        # Figure out if MM50 is up
+        mm50 = new_df["Adj Close"].rolling(50).mean()
+        mm50_today = mm50[-1]
+        mm50_prev = mm50[-2]
+        mm50_is_up = 1 if mm50_today > mm50_prev else 0
+
         all_rsi[ticker.replace(".SA", "")] = {
             "rsi": rsi_value,
             "target": target.round(2),
             "price": price.round(2),
             "upside": upside.round(2),
+            "mm50_is_up": mm50_is_up,
         }
 
     return jsonify(all_rsi)
