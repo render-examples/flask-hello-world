@@ -92,6 +92,5 @@ def api():
             "price": price.round(2),
             "upside": upside.round(2),
         }
-        # all_rsi[ticker] = rsi_value
 
     return jsonify(all_rsi)
