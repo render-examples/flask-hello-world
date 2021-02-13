@@ -81,6 +81,17 @@ def api():
             }
         )
 
-        all_rsi[ticker] = int(round(rsi(new_df, "Adj Close", 2)[-1]))
+        rsi_value = int(round(rsi(new_df, "Adj Close", 2)[-1]))
+        target = new_df["High"].shift(2)[-1]
+        price = new_df["Adj Close"][-1]
+        upside = ((target - price) / price) * 100
+
+        all_rsi[ticker.replace(".SA", "")] = {
+            "rsi": rsi_value,
+            "target": target.round(2),
+            "price": price.round(2),
+            "upside": upside.round(2),
+        }
+        # all_rsi[ticker] = rsi_value
 
     return jsonify(all_rsi)
