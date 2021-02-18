@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 import yfinance as yf
 from flask import Response, request, jsonify
 from markupsafe import escape
@@ -12,6 +13,7 @@ from utils import (
 )
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/")
@@ -63,11 +65,13 @@ def backtest_ifr2(ticker):
 def api():
     tickers = get_ibov_tickers()
 
-    start = (datetime.today() - timedelta(days=80)).strftime("%Y-%m-%d")
+    start = (datetime.today() - timedelta(days=100)).strftime("%Y-%m-%d")
     end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
     df = yf.download(tickers, start=start, end=end).copy()[
         ["Open", "High", "Adj Close"]
     ]
+
+    # print(start)
 
     df.columns = [" ".join(col).strip() for col in df.columns.values]
 
@@ -80,11 +84,23 @@ def api():
                 "Adj Close " + ticker: "Adj Close",
             }
         )
+        new_df.dropna(inplace=True)
 
         rsi_value = int(round(rsi(new_df, "Adj Close", 2)[-1]))
         target = new_df["High"].shift(2)[-1]
+        max_today = new_df["High"][-1]
+        max_1_day_ago = new_df["High"][-2]
+
+        # Target is the max value of today and yesterday. This is because the operation
+        # starts at the end of the current day, and all possible sells are in the next day
+        # Therefore, tomorrow the last two days will be today and yesterday
+        target = max(max_today, max_1_day_ago)
         price = new_df["Adj Close"][-1]
         upside = ((target - price) / price) * 100
+
+        # Variation of the last 100 days
+        initial_price = new_df["Adj Close"][0]
+        variation = ((price - initial_price) / initial_price) * 100
 
         # Figure out if MM50 is up
         mm50 = new_df["Adj Close"].rolling(50).mean()
@@ -98,6 +114,7 @@ def api():
             "price": price.round(2),
             "upside": upside.round(2),
             "mm50_is_up": mm50_is_up,
+            "variation": variation.round(2),
         }
 
     return jsonify(all_rsi)
