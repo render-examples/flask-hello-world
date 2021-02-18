@@ -87,7 +87,6 @@ def api():
         new_df.dropna(inplace=True)
 
         rsi_value = int(round(rsi(new_df, "Adj Close", 2)[-1]))
-        target = new_df["High"].shift(2)[-1]
         max_today = new_df["High"][-1]
         max_1_day_ago = new_df["High"][-2]
 
