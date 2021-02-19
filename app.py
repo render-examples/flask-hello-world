@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_cors import CORS
 import yfinance as yf
 from flask import Response, request, jsonify
 from markupsafe import escape
@@ -13,7 +12,6 @@ from utils import (
 )
 
 app = Flask(__name__)
-CORS(app)
 
 
 @app.route("/")

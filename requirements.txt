@@ -3,4 +3,3 @@ Gunicorn
 yfinance
 numpy
 pandas
-flask-cors
