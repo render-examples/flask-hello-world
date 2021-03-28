@@ -4,7 +4,9 @@ from flask import Response, request, jsonify
 from markupsafe import escape
 from datetime import date, datetime, timedelta
 from utils import (
+    bb,
     get_ibov_tickers,
+    position_relative_to_bands,
     rsi,
     strategy_points,
     strategy_test,
@@ -115,3 +117,25 @@ def api():
         }
 
     return jsonify(all_rsi)
+
+
+@app.route("/bb/<ticker>")
+def bollinger_bands(ticker):
+    yf_ticker = escape(ticker) + ".SA"
+    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
+    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
+    df = yf.download(yf_ticker, start=start, end=end).copy()[["Adj Close"]]
+
+    k = 2 if request.args.get("k") is None else int(request.args.get("k"))
+    n = 20 if request.args.get("n") is None else int(request.args.get("n"))
+
+    bb_df = bb(df, k, n)
+    return jsonify(
+        {
+            "middle_band": bb_df["Middle Band"][-1].round(2),
+            "upper_band": bb_df["Upper Band"][-1].round(2),
+            "lower_band": bb_df["Lower Band"][-1].round(2),
+            "current_price": bb_df["Adj Close"][-1].round(2),
+            "text": position_relative_to_bands(ticker, bb_df["Adj Close"], k, n),
+        }
+    )

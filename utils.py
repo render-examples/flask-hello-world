@@ -140,3 +140,34 @@ def get_ibov_tickers():
     tickers = (html.index + ".SA").to_list()
     return tickers
 
+
+def below_bands(data, k=2, n=20):
+    std = data.rolling(n).std()
+    middle_band = data.rolling(n).mean()
+    lower_band = middle_band - k * std
+    return data < lower_band
+
+
+def above_bands(data, k=2, n=20):
+    std = data.rolling(n).std()
+    middle_band = data.rolling(n).mean()
+    upper_band = middle_band + k * std
+    return data > upper_band
+
+
+def bb(data, k=2, n=20):
+    std = data["Adj Close"].rolling(n).std()
+    data["Middle Band"] = data["Adj Close"].rolling(n).mean()
+    data["Upper Band"] = data["Middle Band"] + std * k
+    data["Lower Band"] = data["Middle Band"] - std * k
+    return data
+
+
+def position_relative_to_bands(asset_name, data, k=2, n=20):
+    if below_bands(data, k, n)[-1]:
+        return f"{asset_name} está abaixo das Bandas de Bollinger"
+    elif above_bands(data, k, n)[-1]:
+        return f"{asset_name} está acima das Bandas de Bollinger"
+    else:
+        return f"{asset_name} está dentro das Bandas de Bollinger"
+
