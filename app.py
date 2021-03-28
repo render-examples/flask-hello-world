@@ -126,7 +126,7 @@ def bollinger_bands(ticker):
     end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
     df = yf.download(yf_ticker, start=start, end=end).copy()[["Adj Close"]]
 
-    k = 2 if request.args.get("k") is None else int(request.args.get("k"))
+    k = 2 if request.args.get("k") is None else float(request.args.get("k"))
     n = 20 if request.args.get("n") is None else int(request.args.get("n"))
 
     bb_df = bb(df, k, n)
