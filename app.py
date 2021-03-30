@@ -11,6 +11,7 @@ from utils import (
     strategy_points,
     strategy_test,
     backtest_algorithm,
+    stochastic
 )
 
 app = Flask(__name__)
@@ -139,3 +140,19 @@ def bollinger_bands(ticker):
             "text": position_relative_to_bands(ticker, bb_df["Adj Close"], k, n),
         }
     )
+
+@app.route("/stochastic/<ticker>")
+def stochastic_calculation(ticker):
+    yf_ticker = escape(ticker) + ".SA"
+    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
+    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
+    df = yf.download(yf_ticker, start=start, end=end).copy()[
+        ["High", "Low", "Adj Close"]
+    ]
+    df = stochastic(df)
+    return {
+        "%K": int(round(df["%K"][-1])), 
+        "%D": int(round(df["%D"][-1])),
+        "Slow %K": int(round(df["Slow %K"][-1])),
+        "Slow %D": int(round(df["Slow %D"][-1]))
+        }
