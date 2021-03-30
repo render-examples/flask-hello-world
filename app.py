@@ -156,3 +156,4 @@ def stochastic_calculation(ticker):
         "Slow %K": int(round(df["Slow %K"][-1])),
         "Slow %D": int(round(df["Slow %D"][-1]))
         }
+    
