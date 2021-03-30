@@ -171,3 +171,20 @@ def position_relative_to_bands(asset_name, data, k=2, n=20):
     else:
         return f"{asset_name} está dentro das Bandas de Bollinger"
 
+def stochastic(df, k_window=8, mma_window=3):
+    
+    df = df.copy()
+    
+    n_highest_high = df["High"].rolling(k_window).max()
+    n_lowest_low = df["Low"].rolling(k_window).min()
+    
+    df["%K"] = (
+        (df["Adj Close"] - n_lowest_low) / 
+        (n_highest_high - n_lowest_low)
+    ) * 100
+    df["%D"] = df['%K'].rolling(mma_window).mean()
+    
+    df["Slow %K"] = df["%D"]
+    df["Slow %D"] = df["Slow %K"].rolling(mma_window).mean()
+    
+    return df 
