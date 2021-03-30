@@ -156,3 +156,38 @@ def stochastic_calculation(ticker):
         "Slow %K": int(round(df["Slow %K"][-1])),
         "Slow %D": int(round(df["Slow %D"][-1]))
         }
+    
+@app.route("/stochastic")
+def all_stochastic():
+
+    tickers = get_ibov_tickers()
+
+    start = (datetime.today() - timedelta(days=100)).strftime("%Y-%m-%d")
+    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
+    df = yf.download(tickers, start=start, end=end).copy()[
+        ["High", "Low", "Adj Close"]
+    ]
+
+    df.columns = [" ".join(col).strip() for col in df.columns.values]
+
+    all_stochastic = {}
+    for ticker in tickers:
+        new_df = df[["High " + ticker, "Low " + ticker, "Adj Close " + ticker]].rename(
+            columns={
+                "High " + ticker: "High",
+                "Low " + ticker: "Low",
+                "Adj Close " + ticker: "Adj Close",
+            }
+        )
+        
+        new_df.dropna(inplace=True)
+        
+        stochastic_value = round(stochastic(new_df).iloc[-1])
+         
+        all_stochastic[ticker.replace(".SA", "")] = {
+            "%K": int(stochastic_value["%K"]), 
+            "%D": int(stochastic_value["%D"]),
+            "Slow %K": int(stochastic_value["Slow %K"]),
+            "Slow %D": int(stochastic_value["Slow %D"])
+        }
+    return jsonify(all_stochastic)
