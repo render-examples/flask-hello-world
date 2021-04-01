@@ -182,12 +182,43 @@ def all_stochastic():
         
         new_df.dropna(inplace=True)
         
-        stochastic_value = round(stochastic(new_df).iloc[-1])
+        stochastic_value = round(stochastic(new_df))
+        
+        # current price 
+        price = new_df["Adj Close"][-1]
+        
+        # Variation of the last 100 days
+        initial_price = new_df["Adj Close"][0]
+        variation = ((price - initial_price) / initial_price) * 100
+        
+        # Figure out if slow K is up
+        k_today = stochastic_value["Slow %K"].iloc[-1]
+        k_prev = stochastic_value["Slow %K"].iloc[-2]
+        k_is_up = 1 if k_today > k_prev else 0
+        
+        # Figure out if slow K crossed above or under D
+        d_today = stochastic_value["Slow %D"].iloc[-1]
+        d_prev = stochastic_value["Slow %D"].iloc[-2]
+        k_above_d = 1 if (k_prev < d_prev) & (k_today > d_today) else 0
+        k_under_d = 1 if (k_prev > d_prev) & (k_today < d_today) else 0
+        
+        
+        # Figure out if MME80 is up
+        mme80 = new_df["Adj Close"].ewm(span=80).mean()
+        mme80_today = mme80[-1]
+        mme80_prev = mme80[-2]
+        # disable 'unused-variable' warning
+        # pylint: disable=unused-argument
+        mme80_is_up = 1 if mme80_today > mme80_prev else 0
          
         all_stochastic[ticker.replace(".SA", "")] = {
-            "%K": int(stochastic_value["%K"]), 
-            "%D": int(stochastic_value["%D"]),
-            "Slow %K": int(stochastic_value["Slow %K"]),
-            "Slow %D": int(stochastic_value["Slow %D"])
+            "k": int(stochastic_value["Slow %K"].iloc[-1]),
+            "d": int(stochastic_value["Slow %D"].iloc[-1]),
+            "price": price.round(2),
+            "variation": variation.round(2),
+            "k_is_up": k_is_up,
+            "k_above_d": k_above_d,
+            "k_under_d": k_under_d,
+            "mme80_is_up": mme80_is_up
         }
     return jsonify(all_stochastic)
