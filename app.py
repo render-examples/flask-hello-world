@@ -151,10 +151,10 @@ def stochastic_calculation(ticker):
     ]
     df = stochastic(df)
     return {
-        "%K": int(round(df["%K"][-1])), 
-        "%D": int(round(df["%D"][-1])),
-        "Slow %K": int(round(df["Slow %K"][-1])),
-        "Slow %D": int(round(df["Slow %D"][-1]))
+        "fast_k": int(round(df["%K"][-1])), 
+        "fast_d": int(round(df["%D"][-1])),
+        "k": int(round(df["Slow %K"][-1])),
+        "d": int(round(df["Slow %D"][-1]))
         }
     
 @app.route("/stochastic")
