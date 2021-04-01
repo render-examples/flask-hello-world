@@ -151,8 +151,72 @@ def stochastic_calculation(ticker):
     ]
     df = stochastic(df)
     return {
-        "%K": int(round(df["%K"][-1])), 
-        "%D": int(round(df["%D"][-1])),
-        "Slow %K": int(round(df["Slow %K"][-1])),
-        "Slow %D": int(round(df["Slow %D"][-1]))
+        "fast_k": int(round(df["%K"][-1])), 
+        "fast_d": int(round(df["%D"][-1])),
+        "k": int(round(df["Slow %K"][-1])),
+        "d": int(round(df["Slow %D"][-1]))
         }
+    
+@app.route("/stochastic")
+def all_stochastic():
+
+    tickers = get_ibov_tickers()
+
+    start = (datetime.today() - timedelta(days=120)).strftime("%Y-%m-%d")
+    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
+    df = yf.download(tickers, start=start, end=end).copy()[
+        ["High", "Low", "Adj Close"]
+    ]
+
+    df.columns = [" ".join(col).strip() for col in df.columns.values]
+
+    all_stochastic = {}
+    for ticker in tickers:
+        new_df = df[["High " + ticker, "Low " + ticker, "Adj Close " + ticker]].rename(
+            columns={
+                "High " + ticker: "High",
+                "Low " + ticker: "Low",
+                "Adj Close " + ticker: "Adj Close",
+            }
+        )
+        
+        new_df.dropna(inplace=True)
+        
+        new_df = stochastic(new_df)
+
+        # current price 
+        price = new_df["Adj Close"][-1]
+        
+        # Variation of the last 120 days
+        initial_price = new_df["Adj Close"][0]
+        variation = ((price - initial_price) / initial_price) * 100
+    
+        # Figure out if slow K is up
+        k_today = new_df["Slow %K"][-1]
+        k_prev = new_df["Slow %K"][-2]
+        k_is_up = 1 if k_today > k_prev else 0
+        
+        # Figure out if slow K crossed above or under D
+        d_today = new_df["Slow %D"][-1]
+        d_prev = new_df["Slow %D"][-2]
+        k_crossed_above = 1 if (k_prev < d_prev) & (k_today > d_today) else 0
+        k_crossed_below = 1 if (k_prev > d_prev) & (k_today < d_today) else 0
+        
+        
+        # Figure out if MME80 is up
+        mme80 = new_df["Adj Close"].ewm(span=80).mean()
+        mme80_today = mme80[-1]
+        mme80_prev = mme80[-2]
+        mme80_is_up = 1 if mme80_today > mme80_prev else 0
+         
+        all_stochastic[ticker.replace(".SA", "")] = {
+            "k": int(round(k_today)),
+            "d": int(round(d_today)),
+            "price": price.round(2),
+            "variation": variation.round(2),
+            "k_is_up": k_is_up,
+            "k_crossed_above": k_crossed_above,
+            "k_crossed_below": k_crossed_below,
+            "mme80_is_up": mme80_is_up
+        }
+    return jsonify(all_stochastic)
