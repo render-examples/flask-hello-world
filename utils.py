@@ -187,4 +187,5 @@ def stochastic(df, k_window=8, mma_window=3):
     df["Slow %K"] = df["%D"]
     df["Slow %D"] = df["Slow %K"].rolling(mma_window).mean()
     
-    return df 
+    return df
+

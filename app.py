@@ -162,7 +162,7 @@ def all_stochastic():
 
     tickers = get_ibov_tickers()
 
-    start = (datetime.today() - timedelta(days=100)).strftime("%Y-%m-%d")
+    start = (datetime.today() - timedelta(days=120)).strftime("%Y-%m-%d")
     end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
     df = yf.download(tickers, start=start, end=end).copy()[
         ["High", "Low", "Adj Close"]
@@ -182,43 +182,41 @@ def all_stochastic():
         
         new_df.dropna(inplace=True)
         
-        stochastic_value = round(stochastic(new_df))
-        
+        new_df = stochastic(new_df)
+
         # current price 
         price = new_df["Adj Close"][-1]
         
-        # Variation of the last 100 days
+        # Variation of the last 120 days
         initial_price = new_df["Adj Close"][0]
         variation = ((price - initial_price) / initial_price) * 100
-        
+    
         # Figure out if slow K is up
-        k_today = stochastic_value["Slow %K"].iloc[-1]
-        k_prev = stochastic_value["Slow %K"].iloc[-2]
+        k_today = new_df["Slow %K"][-1]
+        k_prev = new_df["Slow %K"][-2]
         k_is_up = 1 if k_today > k_prev else 0
         
         # Figure out if slow K crossed above or under D
-        d_today = stochastic_value["Slow %D"].iloc[-1]
-        d_prev = stochastic_value["Slow %D"].iloc[-2]
-        k_above_d = 1 if (k_prev < d_prev) & (k_today > d_today) else 0
-        k_under_d = 1 if (k_prev > d_prev) & (k_today < d_today) else 0
+        d_today = new_df["Slow %D"][-1]
+        d_prev = new_df["Slow %D"][-2]
+        k_crossed_above = 1 if (k_prev < d_prev) & (k_today > d_today) else 0
+        k_crossed_below = 1 if (k_prev > d_prev) & (k_today < d_today) else 0
         
         
         # Figure out if MME80 is up
         mme80 = new_df["Adj Close"].ewm(span=80).mean()
         mme80_today = mme80[-1]
         mme80_prev = mme80[-2]
-        # disable 'unused-variable' warning
-        # pylint: disable=unused-argument
         mme80_is_up = 1 if mme80_today > mme80_prev else 0
          
         all_stochastic[ticker.replace(".SA", "")] = {
-            "k": int(stochastic_value["Slow %K"].iloc[-1]),
-            "d": int(stochastic_value["Slow %D"].iloc[-1]),
+            "k": int(round(k_today)),
+            "d": int(round(d_today)),
             "price": price.round(2),
             "variation": variation.round(2),
             "k_is_up": k_is_up,
-            "k_above_d": k_above_d,
-            "k_under_d": k_under_d,
+            "k_crossed_above": k_crossed_above,
+            "k_crossed_below": k_crossed_below,
             "mme80_is_up": mme80_is_up
         }
     return jsonify(all_stochastic)
