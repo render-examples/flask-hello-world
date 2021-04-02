@@ -11,7 +11,8 @@ from utils import (
     strategy_points,
     strategy_test,
     backtest_algorithm,
-    stochastic
+    stochastic,
+    get_data_from_tickers
 )
 
 app = Flask(__name__)
@@ -34,11 +35,11 @@ def me_api(ticker):
 @app.route("/ifr2/<ticker>")
 def ifr2(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[
-        ["Open", "High", "Adj Close"]
-    ]
+    df = get_data_from_tickers(
+        tickers=yf_ticker,
+        columns=["Open", "High", "Adj Close"],
+        start_timedelta=50
+    )
     ifr2_df = rsi(df, "Adj Close", 2)
     return {"ifr2": int(round(ifr2_df[-1]))}
 
@@ -46,11 +47,11 @@ def ifr2(ticker):
 @app.route("/backtest/ifr2/<ticker>")
 def backtest_ifr2(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=500)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[
-        ["Open", "High", "Close", "Adj Close"]
-    ]
+    df = get_data_from_tickers(
+        tickers=yf_ticker,
+        columns=["Open", "High", "Close", "Adj Close"],
+        start_timedelta=500
+    )
     df["IFR2"] = rsi(df, column="Adj Close")
     entry = (
         None if request.args.get("entry") is None else int(request.args.get("entry"))
@@ -65,12 +66,11 @@ def backtest_ifr2(ticker):
 @app.route("/ifr2")
 def api():
     tickers = get_ibov_tickers()
-
-    start = (datetime.today() - timedelta(days=100)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(tickers, start=start, end=end).copy()[
-        ["Open", "High", "Adj Close"]
-    ]
+    df = get_data_from_tickers(
+        tickers=tickers,
+        columns=["Open", "High", "Adj Close"],
+        start_timedelta=100
+    )
 
     # print(start)
 
@@ -123,10 +123,12 @@ def api():
 @app.route("/bb/<ticker>")
 def bollinger_bands(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[["Adj Close"]]
-
+    df = get_data_from_tickers(
+        tickers=yf_ticker,
+        columns=["Adj Close"],
+        start_timedelta=50
+    )
+    
     k = 2 if request.args.get("k") is None else float(request.args.get("k"))
     n = 20 if request.args.get("n") is None else int(request.args.get("n"))
 
@@ -144,11 +146,11 @@ def bollinger_bands(ticker):
 @app.route("/stochastic/<ticker>")
 def stochastic_calculation(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[
-        ["High", "Low", "Adj Close"]
-    ]
+    df = get_data_from_tickers(
+        tickers=yf_ticker,
+        columns=["High", "Low", "Adj Close"],
+        start_timedelta=50
+    )
     df = stochastic(df)
     return {
         "fast_k": int(round(df["%K"][-1])), 
@@ -161,12 +163,11 @@ def stochastic_calculation(ticker):
 def all_stochastic():
 
     tickers = get_ibov_tickers()
-
-    start = (datetime.today() - timedelta(days=120)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(tickers, start=start, end=end).copy()[
-        ["High", "Low", "Adj Close"]
-    ]
+    df = get_data_from_tickers(
+        tickers=tickers,
+        columns=["High", "Low", "Adj Close"],
+        start_timedelta=120
+    )
 
     df.columns = [" ".join(col).strip() for col in df.columns.values]
 

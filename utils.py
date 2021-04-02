@@ -1,6 +1,8 @@
 import numpy as np
 import math
 import pandas as pd
+from datetime import date, datetime, timedelta
+import yfinance as yf
 
 # Create a function to round any number to the smallest multiple of 100
 def round_down(x):
@@ -187,5 +189,11 @@ def stochastic(df, k_window=8, mma_window=3):
     df["Slow %K"] = df["%D"]
     df["Slow %D"] = df["Slow %K"].rolling(mma_window).mean()
     
+    return df
+
+def get_data_from_tickers(tickers, columns, start_timedelta, end_timedelta=1):
+    start = (datetime.today() - timedelta(days=start_timedelta)).strftime("%Y-%m-%d")
+    end = (date.today() + timedelta(days=end_timedelta)).strftime("%Y-%m-%d")
+    df = yf.download(tickers, start=start, end=end).copy()[columns]
     return df
 
