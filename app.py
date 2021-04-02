@@ -221,3 +221,101 @@ def all_stochastic():
             "mme80_is_up": mme80_is_up
         }
     return jsonify(all_stochastic)
+
+@app.route("/static")
+def indicators():
+    tickers = get_ibov_tickers()
+    df = get_data_from_tickers(
+        tickers=tickers,
+        columns=["Open", "High", "Low", "Adj Close"],
+        start_timedelta=120
+    )
+    
+    df.columns = [" ".join(col).strip() for col in df.columns.values]
+
+    all_rsi = {}
+    all_stochastic = {}
+    indicators = {}
+    for ticker in tickers:
+        new_df = df[["Open " + ticker, "High " + ticker, "Low " + ticker, "Adj Close " + ticker]].rename(
+            columns={
+                "Open " + ticker: "Open",
+                "High " + ticker: "High",
+                "Low " + ticker: "Low",
+                "Adj Close " + ticker: "Adj Close",
+            }
+        )
+        
+        new_df.dropna(inplace=True)
+        
+        # RSI DICTIONARY
+        rsi_value = int(round(rsi(new_df, "Adj Close", 2)[-1]))
+        max_today = new_df["High"][-1]
+        max_1_day_ago = new_df["High"][-2]
+
+        # Target is the max value of today and yesterday. This is because the operation
+        # starts at the end of the current day, and all possible sells are in the next day
+        # Therefore, tomorrow the last two days will be today and yesterday
+        target = max(max_today, max_1_day_ago)
+        price = new_df["Adj Close"][-1]
+        upside = ((target - price) / price) * 100
+
+        # Variation of the last 100 days
+        initial_price = new_df["Adj Close"][0]
+        variation = ((price - initial_price) / initial_price) * 100
+
+        # Figure out if MM50 is up
+        mm50 = new_df["Adj Close"].rolling(50).mean()
+        mm50_today = mm50[-1]
+        mm50_prev = mm50[-2]
+        mm50_is_up = 1 if mm50_today > mm50_prev else 0
+        
+        all_rsi[ticker.replace(".SA", "")] = {
+            "rsi": rsi_value,
+            "target": target.round(2),
+            "price": price.round(2),
+            "upside": upside.round(2),
+            "mm50_is_up": mm50_is_up,
+            "variation": variation.round(2),
+        }
+        print(all_rsi)
+        
+        # STOCHASTIC DICTIONARY
+        new_df = stochastic(new_df)
+    
+        # Figure out if slow K is up
+        k_today = new_df["Slow %K"][-1]
+        k_prev = new_df["Slow %K"][-2]
+        k_is_up = 1 if k_today > k_prev else 0
+        
+        # Figure out if slow K crossed above or under D
+        d_today = new_df["Slow %D"][-1]
+        d_prev = new_df["Slow %D"][-2]
+        k_crossed_above = 1 if (k_prev < d_prev) & (k_today > d_today) else 0
+        k_crossed_below = 1 if (k_prev > d_prev) & (k_today < d_today) else 0
+        
+        
+        # Figure out if MME80 is up
+        mme80 = new_df["Adj Close"].ewm(span=80).mean()
+        mme80_today = mme80[-1]
+        mme80_prev = mme80[-2]
+        mme80_is_up = 1 if mme80_today > mme80_prev else 0
+         
+        all_stochastic[ticker.replace(".SA", "")] = {
+            "k": int(round(k_today)),
+            "d": int(round(d_today)),
+            "price": price.round(2),
+            "variation": variation.round(2),
+            "k_is_up": k_is_up,
+            "k_crossed_above": k_crossed_above,
+            "k_crossed_below": k_crossed_below,
+            "mme80_is_up": mme80_is_up
+        }
+        
+        indicators[ticker.replace(".SA", "")] = {
+            "ifr2": all_rsi[ticker.replace(".SA", "")],
+            "stochastic": all_stochastic[ticker.replace(".SA", "")]
+        }
+        
+    return jsonify(indicators)
+        
