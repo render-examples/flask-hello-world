@@ -11,11 +11,14 @@ from utils import (
     strategy_points,
     strategy_test,
     backtest_algorithm,
-    stochastic
+    stochastic,
+    get_data, 
+    get_interval,
+    get_rsi_info,
+    get_stochastic_info
 )
 
 app = Flask(__name__)
-
 
 @app.route("/")
 def hello_world():
@@ -34,11 +37,13 @@ def me_api(ticker):
 @app.route("/ifr2/<ticker>")
 def ifr2(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[
-        ["Open", "High", "Adj Close"]
-    ]
+    start, end = get_interval(50)
+    df = get_data(
+        tickers=yf_ticker,
+        columns=["Open", "High", "Adj Close"],
+        start=start,
+        end=end
+    )
     ifr2_df = rsi(df, "Adj Close", 2)
     return {"ifr2": int(round(ifr2_df[-1]))}
 
@@ -46,11 +51,13 @@ def ifr2(ticker):
 @app.route("/backtest/ifr2/<ticker>")
 def backtest_ifr2(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=500)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[
-        ["Open", "High", "Close", "Adj Close"]
-    ]
+    start, end = get_interval(500)
+    df = get_data(
+        tickers=yf_ticker,
+        columns=["Open", "High", "Close", "Adj Close"],
+        start=start,
+        end=end
+    )
     df["IFR2"] = rsi(df, column="Adj Close")
     entry = (
         None if request.args.get("entry") is None else int(request.args.get("entry"))
@@ -65,57 +72,15 @@ def backtest_ifr2(ticker):
 @app.route("/ifr2")
 def api():
     tickers = get_ibov_tickers()
+    start, end = get_interval(100)
+    df = get_data(
+        tickers=tickers,
+        columns=["Open", "High", "Adj Close"],
+        start=start,
+        end=end
+    )
 
-    start = (datetime.today() - timedelta(days=100)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(tickers, start=start, end=end).copy()[
-        ["Open", "High", "Adj Close"]
-    ]
-
-    # print(start)
-
-    df.columns = [" ".join(col).strip() for col in df.columns.values]
-
-    all_rsi = {}
-    for ticker in tickers:
-        new_df = df[["Open " + ticker, "High " + ticker, "Adj Close " + ticker]].rename(
-            columns={
-                "Open " + ticker: "Open",
-                "High " + ticker: "High",
-                "Adj Close " + ticker: "Adj Close",
-            }
-        )
-        new_df.dropna(inplace=True)
-
-        rsi_value = int(round(rsi(new_df, "Adj Close", 2)[-1]))
-        max_today = new_df["High"][-1]
-        max_1_day_ago = new_df["High"][-2]
-
-        # Target is the max value of today and yesterday. This is because the operation
-        # starts at the end of the current day, and all possible sells are in the next day
-        # Therefore, tomorrow the last two days will be today and yesterday
-        target = max(max_today, max_1_day_ago)
-        price = new_df["Adj Close"][-1]
-        upside = ((target - price) / price) * 100
-
-        # Variation of the last 100 days
-        initial_price = new_df["Adj Close"][0]
-        variation = ((price - initial_price) / initial_price) * 100
-
-        # Figure out if MM50 is up
-        mm50 = new_df["Adj Close"].rolling(50).mean()
-        mm50_today = mm50[-1]
-        mm50_prev = mm50[-2]
-        mm50_is_up = 1 if mm50_today > mm50_prev else 0
-
-        all_rsi[ticker.replace(".SA", "")] = {
-            "rsi": rsi_value,
-            "target": target.round(2),
-            "price": price.round(2),
-            "upside": upside.round(2),
-            "mm50_is_up": mm50_is_up,
-            "variation": variation.round(2),
-        }
+    all_rsi = get_rsi_info(df, tickers)
 
     return jsonify(all_rsi)
 
@@ -123,10 +88,14 @@ def api():
 @app.route("/bb/<ticker>")
 def bollinger_bands(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[["Adj Close"]]
-
+    start, end = get_interval(50)
+    df = get_data(
+        tickers=yf_ticker,
+        columns=["Adj Close"],
+        start=start,
+        end=end
+    )
+    
     k = 2 if request.args.get("k") is None else float(request.args.get("k"))
     n = 20 if request.args.get("n") is None else int(request.args.get("n"))
 
@@ -144,79 +113,58 @@ def bollinger_bands(ticker):
 @app.route("/stochastic/<ticker>")
 def stochastic_calculation(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start = (datetime.today() - timedelta(days=50)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(yf_ticker, start=start, end=end).copy()[
-        ["High", "Low", "Adj Close"]
-    ]
+    start, end = get_interval(50)
+    df = get_data(
+        tickers=yf_ticker,
+        columns=["High", "Low", "Adj Close"],
+        start=start,
+        end=end
+    )
     df = stochastic(df)
     return {
         "fast_k": int(round(df["%K"][-1])), 
         "fast_d": int(round(df["%D"][-1])),
         "k": int(round(df["Slow %K"][-1])),
         "d": int(round(df["Slow %D"][-1]))
-        }
+    }
     
 @app.route("/stochastic")
 def all_stochastic():
 
     tickers = get_ibov_tickers()
-
-    start = (datetime.today() - timedelta(days=120)).strftime("%Y-%m-%d")
-    end = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-    df = yf.download(tickers, start=start, end=end).copy()[
-        ["High", "Low", "Adj Close"]
-    ]
-
-    df.columns = [" ".join(col).strip() for col in df.columns.values]
-
-    all_stochastic = {}
-    for ticker in tickers:
-        new_df = df[["High " + ticker, "Low " + ticker, "Adj Close " + ticker]].rename(
-            columns={
-                "High " + ticker: "High",
-                "Low " + ticker: "Low",
-                "Adj Close " + ticker: "Adj Close",
-            }
-        )
-        
-        new_df.dropna(inplace=True)
-        
-        new_df = stochastic(new_df)
-
-        # current price 
-        price = new_df["Adj Close"][-1]
-        
-        # Variation of the last 120 days
-        initial_price = new_df["Adj Close"][0]
-        variation = ((price - initial_price) / initial_price) * 100
+    start, end = get_interval(120)
+    df = get_data(
+        tickers=tickers,
+        columns=["High", "Low", "Adj Close"],
+        start=start,
+        end=end
+    )
     
-        # Figure out if slow K is up
-        k_today = new_df["Slow %K"][-1]
-        k_prev = new_df["Slow %K"][-2]
-        k_is_up = 1 if k_today > k_prev else 0
-        
-        # Figure out if slow K crossed above or under D
-        d_today = new_df["Slow %D"][-1]
-        d_prev = new_df["Slow %D"][-2]
-        k_crossed_above = 1 if (k_prev < d_prev) & (k_today > d_today) else 0
-        k_crossed_below = 1 if (k_prev > d_prev) & (k_today < d_today) else 0
-        
-        
-        # Figure out if MME80 is up
-        mme80 = new_df["Adj Close"].ewm(span=80).mean()
-        mme80_today = mme80[-1]
-        mme80_prev = mme80[-2]
-        mme80_is_up = 1 if mme80_today > mme80_prev else 0
-         
-        all_stochastic[ticker.replace(".SA", "")] = {
-            "k": int(round(k_today)),
-            "d": int(round(d_today)),
-            "price": price.round(2),
-            "variation": variation.round(2),
-            "k_is_up": k_is_up,
-            "k_crossed_above": k_crossed_above,
-            "k_crossed_below": k_crossed_below,
-            "mme80_is_up": mme80_is_up
-        }
+    all_stochastic = get_stochastic_info(df, tickers)
+    
     return jsonify(all_stochastic)
+
+@app.route("/static")
+def indicators():
+    tickers = get_ibov_tickers()
+    start, end = get_interval(120)
+    df = get_data(
+        tickers=tickers,
+        columns=["Open", "High", "Low", "Adj Close"],
+        start=start,
+        end=end
+    )
+    
+    all_rsi = get_rsi_info(df.copy(), tickers)
+    all_stochastic = get_stochastic_info(df.copy(), tickers)
+    
+    indicators = {}
+    for ticker in tickers:
+        ticker = ticker.replace(".SA", "")
+        
+        indicators[ticker] = {
+            "ifr2": all_rsi[ticker],
+            "stochastic": all_stochastic[ticker]
+        }
+        
+    return jsonify(indicators)
