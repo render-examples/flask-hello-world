@@ -105,7 +105,12 @@ def bollinger_bands(ticker):
 @app.route("/beta/<ticker>")
 def beta(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start, end = get_interval(365)
+    interval = (
+        365
+        if request.args.get("interval") is None
+        else int(request.args.get("interval"))
+    )
+    start, end = get_interval(interval)
     benchmark = "^BVSP"
     tickers = [yf_ticker, benchmark]
     df = get_data(tickers=tickers, columns=["Adj Close"], start=start, end=end)[
