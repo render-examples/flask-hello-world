@@ -2,9 +2,10 @@ from flask import Flask
 import yfinance as yf
 from flask import Response, request, jsonify
 from markupsafe import escape
-from datetime import date, datetime, timedelta
 from utils import (
     bb,
+    get_beta,
+    get_beta_info,
     get_ibov_tickers,
     position_relative_to_bands,
     rsi,
@@ -70,7 +71,7 @@ def backtest_ifr2(ticker):
 @app.route("/ifr2")
 def api():
     tickers = get_ibov_tickers()
-    start, end = get_interval(100)
+    start, end = get_interval(365)
     df = get_data(
         tickers=tickers, columns=["Open", "High", "Adj Close"], start=start, end=end
     )
@@ -101,10 +102,31 @@ def bollinger_bands(ticker):
     )
 
 
+@app.route("/beta/<ticker>")
+def beta(ticker):
+    yf_ticker = escape(ticker) + ".SA"
+    start, end = get_interval(365)
+    benchmark = "^BVSP"
+    tickers = [yf_ticker, benchmark]
+    df = get_data(tickers=tickers, columns=["Adj Close"], start=start, end=end)[
+        "Adj Close"
+    ]
+    df.dropna(inplace=True)
+    beta, corr, std_asset, std_bench = get_beta(df[yf_ticker], df[benchmark])
+    return jsonify(
+        {
+            "beta": round(beta, 2),
+            "corr": round(corr, 2),
+            "std_asset": round(std_asset, 4),
+            "std_bench": round(std_bench, 4),
+        }
+    )
+
+
 @app.route("/stochastic/<ticker>")
 def stochastic_calculation(ticker):
     yf_ticker = escape(ticker) + ".SA"
-    start, end = get_interval(50)
+    start, end = get_interval(365)
     df = get_data(
         tickers=yf_ticker, columns=["High", "Low", "Adj Close"], start=start, end=end
     )
@@ -134,7 +156,8 @@ def all_stochastic():
 @app.route("/static")
 def indicators():
     tickers = get_ibov_tickers()
-    start, end = get_interval(120)
+
+    start, end = get_interval(365)
     df = get_data(
         tickers=tickers,
         columns=["Open", "High", "Low", "Adj Close"],
@@ -142,8 +165,11 @@ def indicators():
         end=end,
     )
 
+    ibov = get_data(tickers="^BVSP", columns=["Adj Close"], start=start, end=end)
+
     all_rsi = get_rsi_info(df.copy(), tickers)
     all_stochastic = get_stochastic_info(df.copy(), tickers)
+    all_beta = get_beta_info(df.copy(), tickers, ibov["Adj Close"])
 
     indicators = {}
     for ticker in tickers:
@@ -154,6 +180,10 @@ def indicators():
         variation = all_rsi[ticker]["variation"]
         mme80_is_up = all_stochastic[ticker]["mme80_is_up"]
         mm50_is_up = all_rsi[ticker]["mm50_is_up"]
+        beta = all_beta[ticker]["beta"]
+        corr = all_beta[ticker]["corr"]
+        std_asset = all_beta[ticker]["std_asset"]
+        std_bench = all_beta[ticker]["std_bench"]
 
         # Delete unnecessary data
         del all_rsi[ticker]["price"]
@@ -168,8 +198,11 @@ def indicators():
             "variation": variation,
             "mme80_is_up": mme80_is_up,
             "mm50_is_up": mm50_is_up,
+            "beta": beta,
+            "corr": corr,
+            "std_asset": std_asset,
+            "std_bench": std_bench,
             "rsi": all_rsi[ticker],
             "stochastic": all_stochastic[ticker],
         }
-
     return jsonify(indicators)

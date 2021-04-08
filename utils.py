@@ -108,8 +108,17 @@ def get_drawdown(data, column="Adj Close"):
     return max_drawdown
 
 
+def get_beta(asset, benchmark):
+    asset_change = asset.pct_change()[1:]
+    bench_change = benchmark.pct_change()[1:]
+    corr = asset_change.corr(bench_change)
+    std_asset = asset_change.std()
+    std_bench = bench_change.std()
+    beta = corr * (std_asset / std_bench)
+    return beta, corr, std_asset, std_bench
+
+
 def strategy_test(all_profits, total_capital):
-    print(all_profits)
     gains = sum(x > 0 for x in all_profits)
     losses = sum(x < 0 for x in all_profits)
     num_operations = gains + losses
@@ -173,27 +182,29 @@ def position_relative_to_bands(asset_name, data, k=2, n=20):
     else:
         return f"{asset_name} está dentro das Bandas de Bollinger"
 
+
 def stochastic(df, k_window=8, mma_window=3):
-    
+
     df = df.copy()
-    
+
     n_highest_high = df["High"].rolling(k_window).max()
     n_lowest_low = df["Low"].rolling(k_window).min()
-    
+
     df["%K"] = (
-        (df["Adj Close"] - n_lowest_low) / 
-        (n_highest_high - n_lowest_low)
+        (df["Adj Close"] - n_lowest_low) / (n_highest_high - n_lowest_low)
     ) * 100
-    df["%D"] = df['%K'].rolling(mma_window).mean()
-    
+    df["%D"] = df["%K"].rolling(mma_window).mean()
+
     df["Slow %K"] = df["%D"]
     df["Slow %D"] = df["Slow %K"].rolling(mma_window).mean()
-    
+
     return df
+
 
 def get_data(tickers, columns, start, end):
     df = yf.download(tickers, start=start, end=end).copy()[columns]
     return df
+
 
 def get_interval(start_delta, end_delta=1):
     start = (datetime.today() - timedelta(days=start_delta)).strftime("%Y-%m-%d")
@@ -227,7 +238,11 @@ def get_rsi_info(df, tickers):
         upside = ((target - price) / price) * 100
 
         # Variation of the last 100 days
-        initial_price = new_df["Adj Close"][0]
+        interval = 100
+        start_date = (datetime.today() - timedelta(days=interval)).strftime("%Y-%m-%d")
+        first_date = new_df.index[new_df.index >= start_date][0]
+        index = new_df.index.get_loc(first_date)
+        initial_price = new_df.iloc[index]["Adj Close"]
         variation = ((price - initial_price) / initial_price) * 100
 
         # Figure out if MM50 is up
@@ -244,9 +259,10 @@ def get_rsi_info(df, tickers):
             "mm50_is_up": mm50_is_up,
             "variation": variation.round(2),
         }
-        
+
     return all_rsi
-    
+
+
 def get_stochastic_info(df, tickers):
     df.columns = [" ".join(col).strip() for col in df.columns.values]
 
@@ -259,35 +275,39 @@ def get_stochastic_info(df, tickers):
                 "Adj Close " + ticker: "Adj Close",
             }
         )
-        
+
         new_df.dropna(inplace=True)
-        
+
         new_df = stochastic(new_df)
 
-        # current price 
+        # current price
         price = new_df["Adj Close"][-1]
-        
-        # Variation of the last 120 days
-        initial_price = new_df["Adj Close"][0]
+
+        # Variation of the last 100 days
+        interval = 100
+        start_date = (datetime.today() - timedelta(days=interval)).strftime("%Y-%m-%d")
+        first_date = new_df.index[new_df.index >= start_date][0]
+        index = new_df.index.get_loc(first_date)
+        initial_price = new_df.iloc[index]["Adj Close"]
         variation = ((price - initial_price) / initial_price) * 100
 
         # Figure out if slow K is up
         k_today = new_df["Slow %K"][-1]
         k_prev = new_df["Slow %K"][-2]
         k_is_up = 1 if k_today > k_prev else 0
-        
+
         # Figure out if slow K crossed above or under D
         d_today = new_df["Slow %D"][-1]
         d_prev = new_df["Slow %D"][-2]
         k_crossed_above = 1 if (k_prev < d_prev) & (k_today > d_today) else 0
         k_crossed_below = 1 if (k_prev > d_prev) & (k_today < d_today) else 0
-        
+
         # Figure out if MME80 is up
         mme80 = new_df["Adj Close"].ewm(span=80).mean()
         mme80_today = mme80[-1]
         mme80_prev = mme80[-2]
         mme80_is_up = 1 if mme80_today > mme80_prev else 0
-            
+
         all_stochastic[ticker.replace(".SA", "")] = {
             "k": int(round(k_today)),
             "d": int(round(d_today)),
@@ -296,7 +316,28 @@ def get_stochastic_info(df, tickers):
             "k_is_up": k_is_up,
             "k_crossed_above": k_crossed_above,
             "k_crossed_below": k_crossed_below,
-            "mme80_is_up": mme80_is_up
+            "mme80_is_up": mme80_is_up,
         }
     return all_stochastic
 
+
+def get_beta_info(df, tickers, ibov):
+    df.columns = [" ".join(col).strip() for col in df.columns.values]
+
+    all_beta = {}
+    for ticker in tickers:
+        new_df = df["Adj Close " + ticker].rename(
+            columns={"Adj Close " + ticker: "Adj Close"}
+        )
+        new_df.dropna(inplace=True)
+
+        beta, corr, std_asset, std_bench = get_beta(new_df, ibov)
+
+        all_beta[ticker.replace(".SA", "")] = {
+            "beta": round(beta, 2),
+            "corr": round(corr, 2),
+            "std_asset": round(std_asset, 4),
+            "std_bench": round(std_bench, 4),
+        }
+
+    return all_beta
