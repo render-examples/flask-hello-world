@@ -410,9 +410,7 @@ def get_beta_info(df, tickers, ibov):
 
     all_beta = {}
     for ticker in tickers:
-        new_df = df["Adj Close " + ticker].rename(
-            columns={"Adj Close " + ticker: "Adj Close"}
-        )
+        new_df = df["Adj Close " + ticker]
         new_df.dropna(inplace=True)
 
         beta, corr, std_asset, std_bench = get_beta(new_df, ibov)
