@@ -3,6 +3,7 @@ import math
 import pandas as pd
 from datetime import date, datetime, timedelta
 import yfinance as yf
+from db import connect_to_db
 
 # Create a function to round any number to the smallest multiple of 100
 def round_down(x):
@@ -146,95 +147,10 @@ def strategy_test(all_profits, total_capital):
 
 
 def get_ibov_tickers():
-    # url = "http://bvmf.bmfbovespa.com.br/indices/ResumoCarteiraTeorica.aspx?Indice=IBOV&amp;idioma=pt-br"
-    # html = pd.read_html(url, decimal=",", thousands=".", index_col="Código")[0][:-1]
-    # tickers = (html.index + ".SA").to_list()
-    tickers = [
-        "ABEV3.SA",
-        "ASAI3.SA",
-        "AZUL4.SA",
-        "B3SA3.SA",
-        "BBAS3.SA",
-        "BBDC3.SA",
-        "BBDC4.SA",
-        "BBSE3.SA",
-        "BEEF3.SA",
-        "BPAC11.SA",
-        "BRAP4.SA",
-        "BRDT3.SA",
-        "BRFS3.SA",
-        "BRKM5.SA",
-        "BRML3.SA",
-        "BTOW3.SA",
-        "CCRO3.SA",
-        "CIEL3.SA",
-        "CMIG4.SA",
-        "COGN3.SA",
-        "CPFE3.SA",
-        "CPLE6.SA",
-        "CRFB3.SA",
-        "CSAN3.SA",
-        "CSNA3.SA",
-        "CVCB3.SA",
-        "CYRE3.SA",
-        "ECOR3.SA",
-        "EGIE3.SA",
-        "ELET3.SA",
-        "ELET6.SA",
-        "EMBR3.SA",
-        "ENBR3.SA",
-        "ENEV3.SA",
-        "ENGI11.SA",
-        "EQTL3.SA",
-        "EZTC3.SA",
-        "FLRY3.SA",
-        "GGBR4.SA",
-        "GNDI3.SA",
-        "GOAU4.SA",
-        "GOLL4.SA",
-        "HAPV3.SA",
-        "HGTX3.SA",
-        "HYPE3.SA",
-        "IGTA3.SA",
-        "IRBR3.SA",
-        "ITSA4.SA",
-        "ITUB4.SA",
-        "JBSS3.SA",
-        "JHSF3.SA",
-        "KLBN11.SA",
-        "LAME4.SA",
-        "LCAM3.SA",
-        "LREN3.SA",
-        "MGLU3.SA",
-        "MRFG3.SA",
-        "MRVE3.SA",
-        "MULT3.SA",
-        "NTCO3.SA",
-        "PCAR3.SA",
-        "PETR3.SA",
-        "PETR4.SA",
-        "PRIO3.SA",
-        "QUAL3.SA",
-        "RADL3.SA",
-        "RAIL3.SA",
-        "RENT3.SA",
-        "SANB11.SA",
-        "SBSP3.SA",
-        "SULA11.SA",
-        "SUZB3.SA",
-        "TAEE11.SA",
-        "TIMS3.SA",
-        "TOTS3.SA",
-        "UGPA3.SA",
-        "USIM5.SA",
-        "VALE3.SA",
-        "VIVT3.SA",
-        "VVAR3.SA",
-        "WEGE3.SA",
-        "YDUQ3.SA",
-    ]
+    engine = connect_to_db()
+    tickers = pd.read_sql("asset", engine, columns=["yf_symbol"])
+    tickers = list(tickers["yf_symbol"])
     return tickers
-
 
 def below_bands(data, k=2, n=20):
     std = data.rolling(n).std()

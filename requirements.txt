@@ -3,3 +3,4 @@ Gunicorn
 yfinance
 numpy
 pandas
+python-dotenv
