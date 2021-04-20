@@ -11,3 +11,14 @@ Follow the guide at https://render.com/docs/deploy-flask.
 ## Running
 
 `FLASK_DEBUG=1 flask run`
+
+## Connecting to database 
+
+To connect to the database it is necessary to set an .env file with the following variables: DB_USER_NAME, DB_PASSWORD, DB_ENDPOINT, DB_PORT, DB_NAME.
+
+## Running update_db.py script 
+
+It is necessary to set two different .env variables in order to run the update_db.py script:
+- one with the chromedriver path;
+- and another with the downloads directory path. 
+
