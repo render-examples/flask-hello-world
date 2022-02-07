@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: flaskapp
+    env: python
+    region: oregon
+    plan: starter
+    branch: master
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
