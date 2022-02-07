@@ -3,7 +3,7 @@ services:
     name: flaskapp
     env: python
     region: oregon
-    plan: starter
+    plan: standard
     branch: master
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
