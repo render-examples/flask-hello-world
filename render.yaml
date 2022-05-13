@@ -9,14 +9,24 @@ services:
       - key: FLASK_ENV_VAR
         fromService:
           type: web
-          name: flask2
+          name: flask-renamed
           envVarKey: SERVICE_ENV_VAR
+      - key: REDIS_ENV_VAR
+        fromService:
+          type: redis
+          name: my-redis
+          property: host
   - type: web
-    name: flask2
+    name: flask-renamed
     env: python
     repo: https://github.com/schugs/flask-hello-world
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
     - key: SERVICE_ENV_VAR
-      value: hello world!
+      value: different
+  - type: redis
+    name: my-redis
+    ipAllowList:
+      - source: 203.0.113.4/30
+        description: office
