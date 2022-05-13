@@ -19,4 +19,4 @@ services:
     startCommand: gunicorn app:app
     envVars:
     - key: SERVICE_ENV_VAR
-      value: hello world!
+      value: different
