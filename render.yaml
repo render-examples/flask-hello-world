@@ -11,6 +11,11 @@ services:
           type: web
           name: flask-renamed
           envVarKey: SERVICE_ENV_VAR
+      - key: REDIS_ENV_VAR
+        fromService:
+          type: redis
+          name: my-redis
+          property: host
   - type: web
     name: flask-renamed
     env: python
@@ -20,3 +25,8 @@ services:
     envVars:
     - key: SERVICE_ENV_VAR
       value: different
+  - type: redis
+    name: my-redis
+    ipAllowList:
+      - source: 203.0.113.4/30
+        description: office
