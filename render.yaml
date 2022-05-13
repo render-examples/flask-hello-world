@@ -15,7 +15,7 @@ services:
     name: flask2
     env: python
     repo: https://github.com/schugs/flask-hello-world
-    bulidCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
     - key: SERVICE_ENV_VAR
