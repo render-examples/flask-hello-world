@@ -1,0 +1,18 @@
+previewsEnabled: true
+services:
+  - type: web
+    name: flask-hello-world
+    env: python
+    envVars:
+      - key: FLASK_ENV_VAR
+        fromService:
+          type: web
+          name: flask2
+          envVarKey: SERVICE_ENV_VAR
+  - type: web
+    name: flask2
+    env: python
+    repo: https://github.com/schugs/flask-hello-world
+    envVars:
+    - key: SERVICE_ENV_VAR
+      value: hello world!
