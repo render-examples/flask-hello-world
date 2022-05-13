@@ -9,10 +9,10 @@ services:
       - key: FLASK_ENV_VAR
         fromService:
           type: web
-          name: flask2
+          name: flask-renamed
           envVarKey: SERVICE_ENV_VAR
   - type: web
-    name: flask2
+    name: flask-renamed
     env: python
     repo: https://github.com/schugs/flask-hello-world
     buildCommand: pip install -r requirements.txt
