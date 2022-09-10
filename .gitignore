@@ -2,10 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+note.txt
 # C extensions
 *.so
-
+database/database.db
+database/database_test.db
 # Distribution / packaging
 .Python
 build/
@@ -83,6 +84,7 @@ celerybeat-schedule
 
 # Environments
 .env
+note.txt
 .venv
 env/
 venv/

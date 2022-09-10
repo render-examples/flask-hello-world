@@ -1,2 +1,16 @@
-Flask
-Gunicorn
+Django==2.2.10
+bcrypt==3.2.0
+PyJWT==2.0.1
+django-chartit==0.2.9
+dj-database-url==0.5.0
+gunicorn==20.0.4
+djangorestframework==3.9.1
+whitenoise==5.0.1 # needed for static files
+cloudinary==1.22.0
+python-decouple==3.3 
+Pillow==2.2.1
+requests==2.24.0
+pysendpulse==0.1.2
+psycopg2==2.8.4
+django-heroku==0.3.1
+django-cors-headers==3.7.0
