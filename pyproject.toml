@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "meta_craft_be"}]
 
 [tool.poetry.dependencies]
-python = "3.8"
+python = "^3.8"
 Django = "^4.1.1"
 dj-database-url = "^1.0.0"
 whitenoise = "^6.2.0"
