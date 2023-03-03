@@ -1,5 +1,4 @@
 Flask
 Gunicorn
-dotenv
 numpy
 openai
