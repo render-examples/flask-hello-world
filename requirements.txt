@@ -1,2 +1,4 @@
 Flask
 Gunicorn
+numpy
+openai
