@@ -8,3 +8,18 @@ instances:
     ##
     ## the name is `<WEB_APP_NAME>`
   - proc_name: flasker
+
+logs:
+  - type: file
+    path: /var/log/gunicorn/access.log
+    service: "flasker-service"
+    source: gunicorn
+
+  - type: file
+    path: /var/log/gunicorn/error.log
+    service: "flasker-service"
+    source: gunicorn
+    log_processing_rules:
+      - type: multi_line
+        name: log_start_with_date
+        pattern: \[\d{4}-\d{2}-\d{2}
