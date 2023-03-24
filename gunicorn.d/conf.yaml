@@ -1,0 +1,10 @@
+init_config:
+
+instances:
+    ## @param proc_name - string - required
+    ## The name of the gunicorn process. For the following gunicorn server:
+    ##
+    ## gunicorn --name <WEB_APP_NAME> <WEB_APP_CONFIG>.ini
+    ##
+    ## the name is `<WEB_APP_NAME>`
+  - proc_name: flasker
