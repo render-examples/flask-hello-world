@@ -1,4 +1,14 @@
 from flask import Flask
+from datadog import initialize, statsd
+
+options = {
+    'statsd_host':'data-dog-agent-4l5l',
+    'statsd_port':8125
+}
+
+initialize(**options)
+
+
 app = Flask(__name__)
 
 @app.route('/')
