@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Set up Telegram bot API
 TELEGRAM_API_TOKEN = os.environ['BOT_TOKEN']
-bot = Bot(TELEGRAM_API_TOKEN)
+bot = Bot(TELEGRAM_API_TOKEN, threaded=False)
 
 # Initialize global variable for chat ID
 user_chat_id = None
