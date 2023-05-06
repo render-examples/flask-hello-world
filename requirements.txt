@@ -1,4 +1,3 @@
 Flask
 Gunicorn
-telegram
-
+python-telegram-bot
