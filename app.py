@@ -14,7 +14,7 @@ user_chat_id = None
 
 @app.route('/')
 def hello_world():
-    return 'Service for sending notifications to a telegram bot'
+    return 'Service for sending notifications to a telegram bot' + str(user_chat_id)
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
