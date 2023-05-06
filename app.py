@@ -48,7 +48,3 @@ updater.dispatcher.add_handler(CommandHandler("start", start))
 # Start the bot
 updater.start_polling()
 
-# Start Flask app
-if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=81)
-
