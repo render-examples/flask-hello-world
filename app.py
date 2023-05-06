@@ -12,6 +12,9 @@ bot = Bot(TELEGRAM_API_TOKEN)
 # Initialize global variable for chat ID
 user_chat_id = None
 
+@app.route('/')
+def hello_world():
+    return 'Service for sending notifications to a telegram bot'
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
