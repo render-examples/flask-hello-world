@@ -8,11 +8,6 @@ app = Flask(__name__)
 # Set up Telegram bot API
 TELEGRAM_API_TOKEN = os.environ['BOT_TOKEN']
 bot = Bot(TELEGRAM_API_TOKEN)
-updater = Updater(TELEGRAM_API_TOKEN)
-updater.dispatcher.add_handler(CommandHandler("start", start))
-
-# Start the bot
-updater.start_polling()
 
 # Initialize global variable for chat ID
 user_chat_id = None
@@ -49,3 +44,8 @@ def start(update: Update, context: CallbackContext):
   user_chat_id = update.effective_chat.id
   update.message.reply_text("You will now receive notifications.")
 
+updater = Updater(TELEGRAM_API_TOKEN)
+updater.dispatcher.add_handler(CommandHandler("start", start))
+
+# Start the bot
+updater.start_polling()
