@@ -42,7 +42,7 @@ def notify():
 def start(update: Update, context: CallbackContext):
   global user_chat_id
   user_chat_id = update.effective_chat.id
-  update.message.reply_text("You will now receive notifications chat_id:" + user_chat_id)
+  update.message.reply_text("You will now receive notifications chat_id:" + str(user_chat_id))
 
 updater = Updater(TELEGRAM_API_TOKEN)
 updater.dispatcher.add_handler(CommandHandler("start", start))
