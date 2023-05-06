@@ -1,5 +1,4 @@
 Flask
 Gunicorn
 telegram
-telegram.ext
 
