@@ -18,6 +18,7 @@ def hello_world():
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
+  global user_chat_id
   bot.send_message(chat_id=user_chat_id, text="test");
   # Extract logs from request
   logs = request.json['event']
