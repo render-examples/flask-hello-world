@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, Response, g
+from flask import Flask, request, Response
+
 from telegram import Update, Bot
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
@@ -9,15 +10,16 @@ app = Flask(__name__)
 TELEGRAM_API_TOKEN = os.environ['BOT_TOKEN']
 bot = Bot(TELEGRAM_API_TOKEN)
 
+# Set default value for user_chat_id in app.config
+app.config['user_chat_id'] = None
+
 @app.route('/')
 def hello():
-    user_chat_id = g.user_chat_id
-    return 'Service for sending notifications to a telegram bot' + str(user_chat_id)
+    return 'Service for sending notifications to a telegram bot' + str(app.config['user_chat_id'])
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
-  user_chat_id = g.user_chat_id
-  bot.send_message(chat_id=user_chat_id, text="test")
+  bot.send_message(chat_id=app.config['user_chat_id'], text="test")
   # Extract logs from request
   logs = request.json['event']
 
@@ -29,8 +31,8 @@ def notify():
       message = logs
 
       # Send the message to the user
-      if user_chat_id is not None:
-        bot.send_message(chat_id=user_chat_id, text=message)
+      if app.config['user_chat_id'] is not None:
+        bot.send_message(chat_id=app.config['user_chat_id'], text=message)
       else:
         print("User chat ID not set, skipping message")
 
@@ -39,9 +41,8 @@ def notify():
 
 
 def start(update: Update, context: CallbackContext):
-  user_chat_id = update.effective_chat.id
-  g.user_chat_id = user_chat_id
-  update.message.reply_text("You will now receive notifications chat_id:" + str(user_chat_id))
+  app.config['user_chat_id'] = update.effective_chat.id
+  update.message.reply_text("You will now receive notifications chat_id:" + str(app.config['user_chat_id']))
 
 updater = Updater(TELEGRAM_API_TOKEN)
 updater.dispatcher.add_handler(CommandHandler("start", start))
