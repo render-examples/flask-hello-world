@@ -13,12 +13,11 @@ bot = Bot(TELEGRAM_API_TOKEN)
 user_chat_id = None
 
 @app.route('/')
-def hello_world():
+def hello():
     return 'Service for sending notifications to a telegram bot' + str(user_chat_id)
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
-  global user_chat_id
   bot.send_message(chat_id=user_chat_id, text="test")
   # Extract logs from request
   logs = request.json['event']
@@ -50,3 +49,6 @@ updater.dispatcher.add_handler(CommandHandler("start", start))
 
 # Start the bot
 updater.start_polling()
+
+if __name__ == '__main__':
+    app.run()
