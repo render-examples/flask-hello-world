@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, Response
+from flask import Flask, request, Response, g
 from telegram import Update, Bot
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
@@ -9,15 +9,14 @@ app = Flask(__name__)
 TELEGRAM_API_TOKEN = os.environ['BOT_TOKEN']
 bot = Bot(TELEGRAM_API_TOKEN)
 
-# Initialize global variable for chat ID
-user_chat_id = None
-
 @app.route('/')
 def hello():
+    user_chat_id = g.user_chat_id
     return 'Service for sending notifications to a telegram bot' + str(user_chat_id)
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
+  user_chat_id = g.user_chat_id
   bot.send_message(chat_id=user_chat_id, text="test")
   # Extract logs from request
   logs = request.json['event']
@@ -40,8 +39,8 @@ def notify():
 
 
 def start(update: Update, context: CallbackContext):
-  global user_chat_id
   user_chat_id = update.effective_chat.id
+  g.user_chat_id = user_chat_id
   update.message.reply_text("You will now receive notifications chat_id:" + str(user_chat_id))
 
 updater = Updater(TELEGRAM_API_TOKEN)
