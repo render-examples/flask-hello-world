@@ -25,6 +25,18 @@ def notify():
       message = logs
       bot.send_message(chat_id=user_chat_id, text=message)
       
+      if logs['event']['activity'][0]['category'] == 'token':
+        # extract the necessary information
+        from_address = logs['event']['activity'][0]['fromAddress']
+        to_address = logs['event']['activity'][0]['toAddress']
+        token_symbol = logs['event']['activity'][0]['asset']
+        token_address = logs['event']['activity'][0]['rawContract']['address']
+        value = logs['event']['activity'][0]['value']
+
+        # create the text string
+        message = f'Token transfer from {from_address} to {to_address}: {value} {token_symbol} {token_address}'
+        bot.send_message(chat_id=user_chat_id, text=message)
+      
   return Response(status=200)
 
 updater = Updater(TELEGRAM_API_TOKEN)
