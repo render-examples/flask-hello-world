@@ -16,21 +16,14 @@ def hello():
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
-  bot.send_message(chat_id=user_chat_id, text="test")
-  # Extract logs from request
-  logs = request.json['event']
-
-  # Check if logs array is empty
+  
+  logs = request.json
   if (len(logs) == 0):
     print("Empty logs array received, skipping")
-  else:
-    
+  else:    
       message = logs
-      
-      # Send the message to the channel
       bot.send_message(chat_id=user_chat_id, text=message)
       
-  # Return a success response to the request
   return Response(status=200)
 
 updater = Updater(TELEGRAM_API_TOKEN)
