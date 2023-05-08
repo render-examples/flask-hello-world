@@ -20,10 +20,10 @@ def notify():
   if (len(logs) == 0):
     print("Empty logs array received, skipping")
   else:    
-      message = "Event log: "
-      bot.send_message(chat_id=user_chat_id, text=message)
-      message = logs
-      bot.send_message(chat_id=user_chat_id, text=message)
+      #message = "Event log: "
+      #bot.send_message(chat_id=user_chat_id, text=message)
+      #message = logs
+      #bot.send_message(chat_id=user_chat_id, text=message)
       
       if logs['event']['activity'][0]['category'] == 'token':
         # extract the necessary information
@@ -34,8 +34,8 @@ def notify():
         value = logs['event']['activity'][0]['value']
 
         # create the text string
-        message = f'Token transfer from {from_address} to {to_address}: {value} {token_symbol} {token_address}'
-        bot.send_message(chat_id=user_chat_id, text=message)
+        message = f'<b>Token transfer:</b><br/> from {from_address}<br/> to {to_address}:<br/> value: {value} {token_symbol} {token_address}'
+        bot.send_message(chat_id=user_chat_id, text=message, parse_mode=telegram.ParseMode.HTML)
       
   return Response(status=200)
 
