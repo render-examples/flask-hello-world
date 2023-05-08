@@ -20,7 +20,9 @@ def notify():
   if (len(logs) == 0):
     print("Empty logs array received, skipping")
   else:    
-      message = "Event log: "+logs
+      message = "Event log: "
+      bot.send_message(chat_id=user_chat_id, text=message)
+      message = logs
       bot.send_message(chat_id=user_chat_id, text=message)
       
   return Response(status=200)
