@@ -35,7 +35,7 @@ def notify():
 
         # create the text string
         message = f'<b>Token transfer:</b><br/> from {from_address}<br/> to {to_address}:<br/> value: {value} {token_symbol} {token_address}'
-        bot.send_message(chat_id=user_chat_id, text=message, parse_mode=telegram.ParseMode.HTML)
+        bot.send_message(chat_id=user_chat_id, text=message, {parse_mode: 'HTML'})
       
   return Response(status=200)
 
