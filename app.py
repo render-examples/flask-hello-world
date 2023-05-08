@@ -16,12 +16,11 @@ def hello():
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
-  
   logs = request.json
   if (len(logs) == 0):
     print("Empty logs array received, skipping")
   else:    
-      message = logs
+      message = "Event log: "+logs
       bot.send_message(chat_id=user_chat_id, text=message)
       
   return Response(status=200)
