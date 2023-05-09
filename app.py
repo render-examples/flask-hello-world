@@ -25,7 +25,7 @@ def notify():
       #message = logs
       #bot.send_message(chat_id=user_chat_id, text=message)
       
-      if logs['event']['activity'][0]['category'] == 'token':
+      if logs['webhookId']==os.environ['ALCHEMY_KEY'] and logs['event']['activity'][0]['category'] == 'token':
         # extract the necessary information
         from_address = logs['event']['activity'][0]['fromAddress']
         to_address = logs['event']['activity'][0]['toAddress']
