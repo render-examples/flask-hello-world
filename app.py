@@ -12,7 +12,7 @@ user_chat_id = os.environ['CHANNEL_ID']
 
 @app.route('/')
 def hello():
-    return 'Service for sending notifications to a telegram channel ' + str(user_chat_id)
+    return 'Service for sending notifications to a telegram channel ' + str(user_chat_id) + ' '+ str(os.environ['ALCHEMY_KEY'])
 
 @app.route('/notify', methods=['POST','GET'])
 def notify():
