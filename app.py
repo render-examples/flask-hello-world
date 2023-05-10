@@ -20,12 +20,16 @@ def notify():
   if (len(logs) == 0):
     print("Empty logs array received, skipping")
   else:    
-      #message = "Event log: "
-      #bot.send_message(chat_id=user_chat_id, text=message)
-      #message = logs
-      #bot.send_message(chat_id=user_chat_id, text=message)
       
-      if logs['webhookId']==os.environ['ALCHEMY_KEY'] and logs['event']['activity'][0]['category'] == 'token':
+      print(logs)
+      
+      category = ""
+      try:
+         category = logs['event']['activity'][0]['category']
+      except:
+         print("category not defined")
+      
+      if logs['webhookId']==os.environ['ALCHEMY_KEY'] and category == 'token':
         # extract the necessary information
         from_address = logs['event']['activity'][0]['fromAddress']
         to_address = logs['event']['activity'][0]['toAddress']
