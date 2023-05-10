@@ -38,15 +38,14 @@ def notify():
         value = logs['event']['activity'][0]['value']
 
         # create the text string
-        message = f'Token transfer: from {from_address} to {to_address}: value: {value} {token_symbol} {token_address}'
-        bot.send_message(chat_id=user_chat_id, text=message)
+        message = f'*Token transfer:* from {from_address} to {to_address}: value: {value} {token_symbol} {token_address}'
+        bot.send_message(chat_id=user_chat_id, text=message, parse_mode='MarkdownV2')
       
   return Response(status=200)
 
-def main(): 
-  updater = Updater(TELEGRAM_API_TOKEN)
-  updater.start_polling()
+updater = Updater(TELEGRAM_API_TOKEN)
+# Start the bot
+updater.start_polling()
 
 if __name__ == '__main__':
-    main()
     app.run()
