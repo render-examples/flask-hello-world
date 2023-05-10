@@ -38,7 +38,7 @@ def notify():
         value = logs['event']['activity'][0]['value']
 
         # create the text string
-        message = f"*Token transfer:* \nfrom {from_address} \nto {to_address}: \nvalue: {value} {token_symbol} \n{token_address}"
+        message = f'*Token transfer:* \nfrom {from_address} \nto {to_address}: \nvalue: {value} {token_symbol} \n{token_address}'
         bot.send_message(chat_id=user_chat_id, text=message, parse_mode='MarkdownV2')
       
   return Response(status=200)
