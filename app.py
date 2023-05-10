@@ -43,10 +43,10 @@ def notify():
       
   return Response(status=200)
 
-updater = Updater(TELEGRAM_API_TOKEN)
-
-# Start the bot
-updater.start_polling()
+def main(): 
+  updater = Updater(TELEGRAM_API_TOKEN)
+  updater.start_polling()
 
 if __name__ == '__main__':
+    main()
     app.run()
