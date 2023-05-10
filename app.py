@@ -39,7 +39,7 @@ def notify():
         token_symbol = logs['event']['activity'][0]['asset']
         token_address = "["+str(logs['event']['activity'][0]['rawContract']['address'])+"](https://etherscan.io/address/"+str(logs['event']['activity'][0]['rawContract']['address'])+")"
         
-        value = logs['event']['activity'][0]['value']
+        value = str(round(logs['event']['activity'][0]['value']))
 
         # create the text string
         message = f'*Token transfer:*\n{txhash}\nfrom {from_address} \nto {to_address}: \nvalue: {value} *{token_symbol}* \n{token_address}'
