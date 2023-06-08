@@ -15,9 +15,13 @@ app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
 mail = Mail(app)
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+# @app.route('/')
+# def hello_world():
+#     return 'Hello, World!'
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 @app.route("/register", methods=["POST"])
 def register():
