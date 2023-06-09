@@ -1,5 +1,6 @@
 import os
 import re
+import logging
 
 from flask import Flask, render_template, request
 from flask_mail import Mail, Message
@@ -13,6 +14,8 @@ app.config["MAIL_PORT"] = 587
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
+print(app.config)
+logging.error("some error mesage"+app.config)
 mail = Mail(app)
 
 # @app.route('/')
