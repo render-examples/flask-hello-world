@@ -1,14 +1,72 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    <title>Home | Glen Rock Troop 15</title>
+    <link rel="icon" type="image/png" href="troopLogo.png"/>
+    <link rel="stylesheet" href="styles.css">
+{% endblock %}
+
 {% block body %}
-    <h1>Register</h1>
-    <form action="/register" method="post">
-        <input class="fields" autocomplete="off" autofocus name="name" placeholder="Name *" type="text" required />
-        <input class="fields" autocomplete="off" autofocus name="email" placeholder="Email *" type="text" required />
-        <input class="fields" autocomplete="off" autofocus name="phone" placeholder="Phone" type="text" />
-        <input class="fields" autocomplete="off" autofocus name="address" placeholder="Address" type="text" />
-        <input class="fields" autocomplete="off" autofocus name="subject" placeholder="Subject" type="text" />
-        <textarea autocomplete="off" autofocus rows="5" name="message" placeholder="Message..."></textarea>
-        <input type="submit" value="Register" />
-    </form>
+    <div class="container">
+		<div class="container-item header">
+			<logo><a href="index.html"><img src="troopLogo.png"></a></logo>
+				<div class="navbar">
+					<a class="nav-item" href="index.html">Home</a>
+					<a class="nav-item" href="calendar.html">What's happening?</a>
+					<a class="nav-item" href="documents.html">Documents</a>
+					<a class="nav-item" href="links.html">Useful Links</a>
+					<a class="nav-item" href="https://scoutbook.scouting.org/" target = "_blank" rel="noreferrer noopener">Scoutbook</a>
+				</div>
+        </div>
+		<div class="header-image">
+	    	<img src="homeImage1.png">
+		</div>
+		<div class="container-item main">
+	    	<b><h1> Glen Rock Troop 15 </h1></b>
+            <h4> Placing Youth on the Path to Success </h4>
+	    	<div class="main-item main-trio">
+	        	<div class="main-trio-item main-left-image">
+		    		<img src="homeImage2.png">
+	        	</div>
+	        	<div class="main-trio-item main-about">
+		   			<b><h2> Get to Know Us </h2></b> <br>
+		    		Troop 15 is a Scout-led Troop, meaning that the Scouts are responsible for developing the calendar, organizing meetings and training and developing other scouts. This important principle provides the ability for Scouts to learn and lead in a safe environment. This can not be accomplished without parent support and involvement. Unlike Cub Scouts, parents are asked to become much less involved with their own child and more within the structure of the troop as a committee member or assistant Scoutmaster. The success of the troop depends on a lot of adult volunteers who work behind the scenes to make it all happen.
+	        	</div>
+	        	<div class="main-trio-item main-right-image">
+		    		<img src="homeImage3.png">
+	        	</div>
+	    	</div>
+	    	<div class="main-item footer-image">
+				<img src="homeImage4.png">
+	    	</div>
+            <div class="main-item contact-forms">
+	        	<div class="contact-forms-item contact-us">
+					<div class="contact-us-item contact">
+						<h2>Contact Us</h2> <br>
+						Community Church <br>
+						354 Rock Rd. <br>
+						Glen Rock, NJ, 07452 <br><br><br>
+						scoutmaster@grtroop15.org <br><br>
+					</div>
+		    		<div class="contact-us-item map">
+                    	<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d753.2288114432272!2d-74.12478569999999!3d40.96143549999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2fca7ed4f9761%3A0xe2baf6cf6df8d604!2sFellowship%20Hall%2C%20354%20Rock%20Rd%2C%20Glen%20Rock%2C%20NJ%2007452!5e0!3m2!1sen!2sus!4v1677359719115!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+	            	</div>
+				</div>
+	        	<div class="contact-forms-item fill-form">
+                    <form action="/register" method="post">
+                        <input class="fields" autocomplete="off" autofocus name="name" placeholder="Name *" type="text" required />
+                        <input class="fields" autocomplete="off" autofocus name="email" placeholder="Email *" type="text" required />
+                        <input class="fields" autocomplete="off" autofocus name="phone" placeholder="Phone" type="text" />
+                        <input class="fields" autocomplete="off" autofocus name="address" placeholder="Address" type="text" />
+                        <input class="fields" autocomplete="off" autofocus name="subject" placeholder="Subject" type="text" />
+                        <textarea autocomplete="off" autofocus rows="5" name="message" placeholder="Message..."></textarea>
+                        <input type="submit" value="Register" />
+                    </form>
+                </div>
+            </div>
+	    	<div class="main-item copyright">
+				©2023 by Glen Rock Troop 15
+	    	</div>
+		</div>
+    </div>
 {% endblock %}

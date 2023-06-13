@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <title>Calendar | Glen Rock Troop 15</title>
+    <link rel="icon" type="image/png" href="troopLogo.png"/>
+    <link rel="stylesheet" href="styles.css">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+		<div class="container-item header">
+			<logo><a href="index.html"><img src="troopLogo.png"></a></logo>
+				<div class="navbar">
+					<a class="nav-item" href="index.html">Home</a>
+					<a class="nav-item" href="calendar.html">What's happening?</a>
+					<a class="nav-item" href="documents.html">Documents</a>
+					<a class="nav-item" href="links.html">Useful Links</a>
+					<a class="nav-item" href="https://scoutbook.scouting.org/" target = "_blank" rel="noreferrer noopener">Scoutbook</a>
+				</div>
+		</div>
+		<div class="calendar">
+			<iframe src="https://calendar.google.com/calendar/embed?src=hospitality.troop15%40gmail.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+		</div>
+		<div class="main-item copyright">
+			©2023 by Glen Rock Troop 15
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,248 @@
+html, body {
+    height: 100%;
+    scroll-behavior: smooth;
+    margin: 0;
+  }
+
+body {
+    font-family: "Poppins Extra Light", Sans-Serif;
+    font-size: 1.2vw;
+    color: #FFFFFF;
+    background-color: rgb(44, 43, 41);
+    margin: 0;
+    padding: 0;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: "Poppins Semi Bold", Sans-Serif;
+    margin: 0 auto;
+    text-align: center;
+}
+
+h1 {
+    font-size: 5.5vw;
+}
+
+h2 {
+    font-size: 3vw;
+}
+
+h4 {
+    font-size: 1.5vw;
+}
+
+.header logo img {
+    border-radius: 10px;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 20px;
+}
+
+.navbar {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.nav-item {
+    margin-left: 20px;
+    font-size: 1.4vw;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 7.5px;
+    color: white;
+}
+
+.nav-item:hover {
+    background-color: rgb(61, 61, 61);
+}
+
+.header-image {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* .header-image img {
+    width: 100%;
+    height: auto;
+} */
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.main-trio {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(3, minmax(240px, 1fr));
+}
+
+.main-about {
+    padding: 2rem;
+    vertical-align: top;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.contact-forms {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    padding: 0 5rem;
+}
+
+.contact {
+    text-align: center;
+}
+
+.fill-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    padding: 2vw 4vw;
+    width: 50%;
+    max-width: 500px;
+    border-radius: 7.5px;
+}
+
+.fields, form textarea {
+    background-color: rgb(44, 43, 41);
+    color:#FFFFFF;
+    outline: none;
+    font-weight: "bold";
+    border-bottom: 2px solid white;
+    margin: 10px 0;
+    padding: 20px;
+    outline: none;
+    font-size: 16px;
+    border-radius: 10px;
+}
+
+.sendButton {
+    padding: 15px;
+    background-color:rgb(44, 43, 41);
+    color: #FFFFFF;
+    font-size: 18px;
+    border: 1px solid white;
+    outline: none;
+    cursor: pointer;
+    width: 150px;
+    margin: 20px auto 0;
+    border-radius: 20px;
+}
+
+.copyright {
+    text-align: center;
+    background-color:rgb(61, 61, 61);
+    padding: 0.5rem 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.calendar {
+    display: flex;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.documents {
+    display: flex;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    /* flex-direction: column; */
+    margin: 0 auto;
+    padding: 2rem;
+    /* grid-template-columns: repeat(3, minmax(240px, 1fr)); */
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+}
+
+.doc-item {
+    flex-grow: 1;
+    padding: 0.8rem;
+}
+
+.calendar iframe {
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.documents {
+    /* display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 2rem;
+    height: 100%; */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* .doc-item {
+
+} */
+
+span {
+    background-color: red;
+    display: inline-block;
+    text-align: center;
+    font-size: 3vw;
+    color: #FFFFFF;
+    padding: 1rem;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+.caption {
+    color: black;
+}
+
+.caption h2 {
+    padding-top: 0.8rem;
+    text-align: left;
+}
+
+.links {
+    background-color: white;
+    color: black;
+}
+
+.links-item {
+    margin-left: 10%;
+    padding: 0.5rem;
+}
+
+.links a {
+    color: rgb(55,55,55);
+}
+
+/* .main-trio-item { */
+    /* grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); */
+    /* grid-template-rows: repeat(1, 300px); */
+/* } */
