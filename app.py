@@ -24,6 +24,18 @@ mail = Mail(app)
 def index():
     return render_template("index.html")
 
+@app.route("/documents")
+def documents():
+    return render_template("documents.html")
+
+@app.route("/calendar")
+def calendar():
+    return render_template("calendar.html")
+
+@app.route("/links")
+def links():
+    return render_template("links.html")
+
 @app.route("/register", methods=["POST"])
 def register():
 
