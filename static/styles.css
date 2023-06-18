@@ -118,11 +118,14 @@ iframe {
 }
 
 @media (max-width: 600px) {
+    .contact-us {
+        display: flex;
+        flex-direction: column;
+    }
     .map {
         padding-top: 75%;
     }
 }
-
 
 .fill-form {
     display: flex;
