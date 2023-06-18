@@ -155,6 +155,11 @@ form {
     border-radius: 10px;
 }
 
+input::placeholder {
+    color: #FFFFFF;
+    opacity: 1;
+}
+
 .sendButton {
     padding: 15px;
     background-color:rgb(44, 43, 41);
@@ -171,10 +176,8 @@ form {
 .copyright {
     text-align: center;
     background-color:rgb(61, 61, 61);
-    padding: 0.5rem 0;
+    padding-top: 1 rem
     position: fixed;
-    left: 0;
-    bottom: 0;
     width: 100%;
 }
 

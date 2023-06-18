@@ -2,7 +2,7 @@ import os
 import re
 import logging
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_mail import Mail, Message
 app = Flask(__name__)
 
@@ -36,8 +36,8 @@ def calendar():
 def links():
     return render_template("links.html")
 
-@app.route("/register", methods=["POST"])
-def register():
+@app.route("/email_sent", methods=["POST"])
+def send_email():
 
     # Validate submission
     name = request.form.get("name")
@@ -46,8 +46,6 @@ def register():
     address = request.form.get("address")
     subject = request.form.get("subject")
     message = request.form.get("message")
-    if not name or not email:
-        return render_template("failure.html")
 
     # Send email
     body = "Name: " + name + "\n" + "Email: " + email + "\n" + "Phone: " + phone + "\n" + "Address: " + address + "\n" + "\n" + message
@@ -55,5 +53,5 @@ def register():
     print(message)
     mail.send(message)
 
-    # Confirm registration
-    return render_template("success.html")
+    # Redirects to index.html
+    return redirect("/", code=302)
