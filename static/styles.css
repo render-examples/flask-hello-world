@@ -129,6 +129,7 @@ iframe {
 
 .fill-form {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -143,7 +144,10 @@ form {
 }
 
 .responseEmail {
-    visibility: hidden;
+    display: flex;
+    text-align: center;
+    width: 50%;
+    margin: 20px auto;
     text-color: #FFFFFF;
     padding: auto;
 }

@@ -18,7 +18,7 @@
 					<a class="nav-item" href="https://scoutbook.scouting.org/" target = "_blank" rel="noreferrer noopener">Scoutbook</a>
 				</div>
         </div>
-		<div class="header-image">
+		<div class="container-item header-image">
 	    	<img src="static/homeImage1.png">
 		</div>
 		<div class="container-item main">
@@ -52,16 +52,16 @@
                     	<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d753.2288114432272!2d-74.12478569999999!3d40.96143549999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2fca7ed4f9761%3A0xe2baf6cf6df8d604!2sFellowship%20Hall%2C%20354%20Rock%20Rd%2C%20Glen%20Rock%2C%20NJ%2007452!5e0!3m2!1sen!2sus!4v1677359719115!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 	            	</div>
 				</div>
-	        	<div class="contact-forms-item fill-form">
-                    <form action="/email_sent" method="post">
-                        <input class="fields" autocomplete="off" autofocus name="name" placeholder="Name *" type="text" required />
-                        <input class="fields" autocomplete="off" autofocus name="email" placeholder="Email *" type="text" required />
-                        <input class="fields" autocomplete="off" autofocus name="phone" placeholder="Phone" type="text" />
-                        <input class="fields" autocomplete="off" autofocus name="address" placeholder="Address" type="text" />
-                        <input class="fields" autocomplete="off" autofocus name="subject" placeholder="Subject" type="text" />
-                        <textarea autocomplete="off" autofocus rows="5" name="message" placeholder="Message..."></textarea>
+				<div class="contact-forms-item fill-form">
+					<div class="responseEmail"><p> {{ message }} </p></div>
+					<form action="/email_sent" method="post">
+                        <input class="fields" autocomplete="off" name="name" placeholder="Name *" type="text" required />
+                        <input class="fields" autocomplete="off" name="email" placeholder="Email *" type="text" required />
+                        <input class="fields" autocomplete="off" name="phone" placeholder="Phone" type="text" />
+                        <input class="fields" autocomplete="off" name="address" placeholder="Address" type="text" />
+                        <input class="fields" autocomplete="off" name="subject" placeholder="Subject" type="text" />
+                        <textarea autocomplete="off" rows="5" name="message" placeholder="Message..."></textarea>
                         <input class="sendButton" type="submit" value="Send" />
-						<span class="responseEmail" autofocus> Thanks! Message sent. </span>
                     </form>
                 </div>
             </div>
