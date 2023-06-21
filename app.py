@@ -1,5 +1,5 @@
 import yfinance as yf
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -8,4 +8,4 @@ def hyfproxy():
     ticker = request.args.get('ticker')
     stock = yf.Ticker(ticker)
     info = stock.info
-    return str(info)
+    return jsonify(info)
