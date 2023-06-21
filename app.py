@@ -11,7 +11,7 @@ def info():
     return jsonify(info)
 
 @app.route('/news')
-def info():
+def news():
     ticker = request.args.get('ticker')
     stock = yf.Ticker(ticker)
     news = stock.news
