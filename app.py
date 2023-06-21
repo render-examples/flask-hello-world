@@ -26,12 +26,12 @@ def info():
     ticker = request.args.get('ticker')
     cached_info = cache.get(ticker)
     if cached_info is not None:
-        cached_info['source'] = 'cached'
+        cached_info['x-source'] = 'cached'
         return jsonify(cached_info)
     else:
         stock = yf.Ticker(ticker)
         info = stock.info
-        info['source'] = 'live'
+        info['x-source'] = 'live'
         cache.set(ticker, jsonify(info))
         cache.expire(ticker, redis_timeout)
         return jsonify(info)
