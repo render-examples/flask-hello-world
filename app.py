@@ -1,5 +1,8 @@
 import json
 from flask import Flask,request, jsonify
+
+responses = []
+
 app = Flask(__name__)
 
 @app.route('/')
