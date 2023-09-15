@@ -22,7 +22,7 @@ def webhook():
 
     # Start our TwiML response
     resp = MessagingResponse()
-        if message_body == 1 or message_body == 2
+        if message_body == 1 or message_body == 2:
             resp.message("Got it!")    
         else: 
             resp.message("Please send 1 or 2. I was unable to record your message.") 
