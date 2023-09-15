@@ -1,5 +1,6 @@
 import json
 from flask import Flask,request, jsonify
+from twilio.twiml.messaging_response import MessagingResponse
 
 responses = []
 
@@ -16,10 +17,14 @@ def save_to_json():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     message_body = request.form.get('Body')
-    print(message_body)
     responses.append(message_body)
     save_to_json()
-    return jsonify(success=True), 200
+
+    # Start our TwiML response
+    resp = MessagingResponse()
+    resp.message("Hi!")
+    
+    return str(resp)
 
 @app.route('/get_responses', methods=['GET'])
 def get_responses():
