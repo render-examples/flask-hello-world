@@ -15,8 +15,8 @@ def save_to_json():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    data = request.json
     message_body = request.form.get('Body')
+    print(message_body)
     responses.append(message_body)
     save_to_json()
     return jsonify(success=True), 200
