@@ -10,9 +10,9 @@ class ScrapUrl:
         # find all the text on the page
         text = soup.get_text()
         # find the content div
-        content_div = soup.find('div', {'class': 'mw-parser-output'})
-        # remove unwanted elements from div
-        unwanted_tags = ['sup', 'span', 'table', 'ul', 'ol']
+        content_div = soup.find(['main', 'content', 'body', 'div'])
+        # remove unwanted elements from main
+        unwanted_tags = ['sup', 'span', 'table', 'ul', 'ol', 'p', 'i', 'a']
         for tag in unwanted_tags:
             for match in content_div.findAll(tag):
                 match.extract()
