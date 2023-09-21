@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <title>Document</title>
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="">Home</a></li>
+            <li><a href="/Crear">Category</a></li>
+        </ul>
+    </nav>
+</head>
+
+<body>
+    {% for estudiante in estudiantes %}
+    <article>
+        <li>Nombre: {{ estudiante.nombre }} {{ estudiante.apellido }} - Ciclo: {{ estudiante.ciclo }} - Programa: {{
+            estudiante.programa }}</li>
+    </article>
+    {% endfor %}
+</body>
+
+</html>
