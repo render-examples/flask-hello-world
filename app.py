@@ -10,15 +10,10 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello, World!'
 
-def save_to_json():
-    with open('responses.json', 'w') as file:
-        json.dump(responses, file)
-
 @app.route('/webhook', methods=['POST'])
 def webhook():
     message_body = request.form.get('Body')
     responses.append(message_body)
-    save_to_json()
 
     # Start our TwiML response
     resp = MessagingResponse()
@@ -29,10 +24,5 @@ def webhook():
     
     return str(resp)
 
-@app.route('/get_responses', methods=['GET'])
-def get_responses():
-    with open('responses.json', 'r') as file:
-        data = json.load(file)
-    return jsonify(data), 200
 
 
