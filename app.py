@@ -1,12 +1,15 @@
 from flask import Flask, request
 app = Flask(__name__)
 
+import json
+
 from flask_cors import CORS
 
 from flask import Response
 
 from models import llm
 from models import txtmodel
+from models import jsonloader
 
 
 CORS(app)
@@ -30,3 +33,11 @@ def llm_route():
     resp = Response(result)
     resp.charset = "utf-8"
     return resp
+
+@app.route("/expert")
+def loadjson():
+
+    data = (jsonloader.JsonLoader.loadJson("C:\\Users\\ASUS\\Downloads\\donnerExpert.json"))
+    search_string = "specialization"
+    results = jsonloader.JsonLoader.chercher_dans_json(search_string, json.dumps(data))
+    return results
