@@ -10,6 +10,7 @@ from flask import Response
 from models import llm
 from models import txtmodel
 from models import jsonloader
+from models import expfind
 
 
 CORS(app)
@@ -34,10 +35,8 @@ def llm_route():
     resp.charset = "utf-8"
     return resp
 
-@app.route("/expert")
+@app.route("/expert",  methods=["POST"])
 def loadjson():
-
-    data = (jsonloader.JsonLoader.loadJson("C:\\Users\\ASUS\\Downloads\\donnerExpert.json"))
-    search_string = "specialization"
-    results = jsonloader.JsonLoader.chercher_dans_json(search_string, json.dumps(data))
+    requete = request.get_json()
+    results = expfind.ExpFind.findExp(requete['message'])
     return results
