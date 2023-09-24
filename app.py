@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 from flask_cors import CORS
@@ -35,7 +35,10 @@ def get_synonyms(word):
 @app.route("/ask", methods=["POST"])
 def ask():
     question = request.get_json()
-    response = txtmodel.txtmodel.get_response(question['query'])
+    response = {
+        "text": txtmodel.txtmodel.get_response(question['query']),
+        "wantToLearn": False
+    }
 
     # Vérifier si un synonyme de "apprendre" est présent dans la requête
     synonyms_learn = get_synonyms("apprendre") # Utiliser le mot "apprendre" en français pour utiliser le modèle Word2Vec
@@ -45,10 +48,12 @@ def ask():
 
     # Imprimer "Tuteur Virtuel" et "Tuteur Réel" si un synonyme de "apprendre" est trouvé
     if synonym_found:
-        print("Tuteur Virtuel")
-        print("Tuteur Réel")
+        response = {
+            "text": "Veuillez Choisir",
+            "wantToLearn": True
+        }
       
-    return response
+    return jsonify(response)
 
 @app.route("/llm", methods=["POST"])
 def llm_route():

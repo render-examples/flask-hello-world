@@ -1,10 +1,12 @@
 import openai
+import os
 import json
 
+data_dir = os.path.join(os.path.dirname(__file__), "..", "data") 
 class ExpFind:
     def findExp(message):
         # Chargez le fichier JSON local
-        with open("\IAGORA-API\\data\\donnerExperts.json", "r") as file:
+        with open(os.path.join(data_dir, "donnerExperts.json"), "r") as file:
             developers = json.load(file)
             json_data = json.dumps(developers)
         # Appeler l'API GPT
