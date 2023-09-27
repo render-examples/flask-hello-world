@@ -7,7 +7,7 @@ class Findstage:
         response = openai.Completion.create(
         engine='text-davinci-003',
         # prompt = f"""{json_data}\n\n{message} :""",
-        prompt = f""""peux tu generer des requetes pour une base de donner par example j'ai une table stage, les collones sont id, nom, context, remuneration et avec le prompt que j'utilise utilise une requette sql. 
+        prompt = f""""peux tu generer une requete pour une base de donner par example j'ai une table stage, les collones sont id, nom, context, remuneration et avec le prompt que j'utilise utilise une requette sql. 
         voici mon promt : \n\n{message}\n\n 
         et retourne seulement un script sql et la remuneration n'a pas besoin de devise seulement un montant aproximative ou existant""",
         
