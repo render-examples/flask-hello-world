@@ -5,9 +5,6 @@
 properties([disableConcurrentBuilds()])
 
 pipeline {
-    agent { 
-        label 'staging'
-        }
     triggers { pollSCM('* * * * *') }
     options {
 	//Храним 10 последних артефактов и билдов и добавляем временные метки
