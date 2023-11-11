@@ -20,26 +20,24 @@ pipeline {
             steps {
                 echo " ============== docker login =================="
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh """
-                    docker login -u $USERNAME -p $PASSWORD
-                    """
+                    sh 'docker login -u $USERNAME -p $PASSWORD'
                 }
             }
         }
+	#Сборка образа
         stage("create docker image") {
             steps {
                 echo " ============== start building image =================="
-                dir ('docker/toolbox') {
-                    sh 'docker build -t $DOCKERIMAGENAME . '
-                }
+              
+                sh 'docker build -t $DOCKERIMAGENAME . '
+                
             }
         }
+	#Пуш в докерхаб
         stage("docker push") {
             steps {
                 echo " ============== start pushing image =================="
-                sh '''
-                docker push $DOCKERIMAGENAME
-                '''
+                sh 'docker push $DOCKERIMAGENAME'
             }
         }
     }
