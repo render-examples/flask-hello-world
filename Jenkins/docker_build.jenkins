@@ -1,7 +1,7 @@
 #!groovy
 // Run docker build
 
-#Запрещаем одновременное выполнение билдов
+//Запрещаем одновременное выполнение билдов
 properties([disableConcurrentBuilds()])
 
 pipeline {
@@ -10,12 +10,12 @@ pipeline {
         }
     triggers { pollSCM('* * * * *') }
     options {
-	#Храним 10 последних артефактов и билдов и добавляем временные метки
+	//Храним 10 последних артефактов и билдов и добавляем временные метки
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
     stages {
-        #Авторизация
+        //Авторизация
         stage("docker login") {
             steps {
                 echo " ============== docker login =================="
@@ -24,7 +24,7 @@ pipeline {
                 }
             }
         }
-	#Сборка образа
+	//Сборка образа
         stage("create docker image") {
             steps {
                 echo " ============== start building image =================="
@@ -33,7 +33,7 @@ pipeline {
                 
             }
         }
-	#Пуш в докерхаб
+	//Пуш в докерхаб
         stage("docker push") {
             steps {
                 echo " ============== start pushing image =================="
