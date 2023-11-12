@@ -1,0 +1,23 @@
+#!groovy
+// Deploy and start docker image
+
+//Запрещаем одновременное выполнение билдов
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent any
+    stages {
+        // Подключение к удаленной ВМ с помощью SSH и запуск приложения из образа
+        stage("Connect to VM via SSH and deploy app") {
+            environment{
+                    dockerRun = "sudo apt update  && sudo docker run -d -p 5000:5000 $DOCKERIMAGENAME"
+            }
+            steps {
+                echo " ============== Connect to VM via SSH and deploy =================="
+                sshagent(credentials : ['vm-deploy-ssh-key']) {
+                    sh "ssh -o StrictHostKeyChecking=no -l ruslan $REMOTEHOSTIP '${env.dockerRun}' " 
+                }
+            }
+        }
+    }
+}
