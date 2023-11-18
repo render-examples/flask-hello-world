@@ -10,6 +10,7 @@ from models import llm
 from models import txtmodel
 from models import jsonloader
 from models import expfind
+from models import findstage
 
 
 CORS(app)
@@ -70,4 +71,10 @@ def llm_route():
 def loadjson():
     requete = request.get_json()
     results = expfind.ExpFind.findExp(requete['message'])
+    return results
+
+@app.route("/stage",  methods=["POST"])
+def stage():
+    requete = request.get_json()
+    results = findstage.Findstage.finds(requete['message'])
     return results
