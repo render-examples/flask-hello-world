@@ -10,7 +10,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/trigger', methods=['GET'])
+@app.route('/trigger')
 def trigger_action():
     if flag:
         flag = False
