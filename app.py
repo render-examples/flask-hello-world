@@ -12,6 +12,7 @@ def index():
 
 @app.route('/trigger')
 def trigger_action():
+    global flag
     if flag:
         flag = False
         return "Action triggered!"
@@ -21,5 +22,6 @@ def trigger_action():
 
 @app.route('/buttonPressed', methods=['GET'])
 def buttonPressed_action():
+    global flag
     flag = True
     return render_template('index.html')
