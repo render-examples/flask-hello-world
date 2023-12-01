@@ -1,5 +1,8 @@
+from crypt import methods
 from flask import Flask, render_template
 app = Flask(__name__)
+
+flag = False
 
 
 @app.route('/')
@@ -9,8 +12,14 @@ def index():
 
 @app.route('/trigger', methods=['GET'])
 def trigger_action():
-    # Code to perform the action when the button is pressed
-    # This could involve sending a signal to the ESP32
-    print("Button pressed!")
-    # Add code to communicate with the ESP32 here
-    return "Action triggered!"
+    if flag:
+        flag = False
+        return "Action triggered!"
+    else:
+        return "Action not triggered!"
+
+
+@app.route('/buttonPressed', methods=['GET'])
+def buttonPressed_action():
+    flag = True
+    return render_template('index.html')
