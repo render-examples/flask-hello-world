@@ -53,16 +53,16 @@ def send_email():
     # with open(png_attachment_path, "rb") as attachment:
     #     image_part = MIMEImage(attachment.read(), name="image.png")
     #     message.attach(image_part)
-    # if image_data:
-    image_data = image_data[0]
+    if image_data:
+        image_data = image_data[0]
 
-    # Convert binary image data to base64
-    base64_data = base64.b64encode(image_data).decode('utf-8')
+        # Convert binary image data to base64
+        base64_data = base64.b64encode(image_data).decode('utf-8')
 
-    # Convert base64 data to binary
-    binary_data = base64.b64decode(base64_data)
-    image_part = MIMEImage(binary_data, name="image.png")
-    message.attach(image_part)
+        # Convert base64 data to binary
+        binary_data = base64.b64decode(base64_data)
+        image_part = MIMEImage(binary_data, name="image.png")
+        message.attach(image_part)
 
     # Connect to the SMTP server and send the email
     with smtplib.SMTP(smtp_server, smtp_port) as server:
