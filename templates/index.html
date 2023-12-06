@@ -5,12 +5,12 @@
 </head>
 <body>
     <h1>Home Radar main page</h1>
-    <br><br>
+    <br>
     <form action="/buttonPressed" method="get">
         <button type="submit">Activate the alarm</button>
     </form>
     <br>
-    <h2>Current temperature:</h2>
+    <h2>Current temperature in your home:</h2>
     <p id="displayValue">{{ value }} celcius</p>
 
     <a href="/gallery">View Image Gallery</a>
@@ -26,7 +26,7 @@
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     // Update the displayed value
-                    document.getElementById('displayValue').textContent = this.responseText;
+                    document.getElementById('displayValue').textContent = this.responseText+" celsius";
                 }
             };
 

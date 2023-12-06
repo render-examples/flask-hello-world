@@ -2,7 +2,8 @@ from crypt import methods
 from flask import Flask, render_template, request, jsonify
 import sqlite3
 import base64
-from SendEmail import send_email
+from SendEmailPicture import send_email_picture
+from SendEmailTemperature import send_email_temperature
 app = Flask(__name__)
 
 conn = sqlite3.connect("database.db")
@@ -89,10 +90,17 @@ def upload_file():
         return jsonify({'message': 'File uploaded and inserted into the database'})
 
 
-@app.route('/sendEmail', methods=['GET'])
-def sendEmail():
-    send_email()
-    return "Email sent successfully"
+@app.route('/sendEmailPicture', methods=['GET'])
+def sendEmailPicture():
+    send_email_picture()
+    return "Email with Picture sent successfully"
+
+
+@app.route('/sendEmailTemperature', methods=['GET'])
+def sendEmailTemperature():
+    global temperature_value
+    send_email_temperature(temperature_value)
+    return "Email with Temperature sent successfully"
 
 
 @app.route('/gallery')
