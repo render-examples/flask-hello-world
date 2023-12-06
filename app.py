@@ -62,7 +62,7 @@ def upload_file():
         return jsonify({'message': 'File uploaded and inserted into the database'})
 
 
-@app.route('/sendEmail', methods['GET'])
+@app.route('/sendEmail', methods=['GET'])
 def sendEmail():
     send_email()
     return "Email sent successfully"
