@@ -34,7 +34,7 @@ def send_email():
     """
 
     # Replace with the path to the JPEG file you want to attach
-    jpeg_attachment_path = "image.png"
+    png_attachment_path = "image.png"
 
     # Replace with your email server's information
     smtp_server = "smtp.gmail.com"
@@ -50,9 +50,9 @@ def send_email():
     message.attach(MIMEText(body, "plain"))
 
     # Attach the JPEG file
-    # with open(jpeg_attachment_path, "rb") as attachment:
-    #     image_part = MIMEImage(attachment.read(), name="image.png")
-    #     message.attach(image_part)
+    with open(png_attachment_path, "rb") as attachment:
+        image_part = MIMEImage(attachment.read(), name="image.png")
+        message.attach(image_part)
     if image_data:
         image_data = image_data[0]
 
