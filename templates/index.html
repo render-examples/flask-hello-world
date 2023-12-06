@@ -10,6 +10,35 @@
         <button type="submit">Activate the alarm</button>
     </form>
     <br>
+    <h2>Current temperature:</h2>
+    <p id="displayValue">{{ value }} celcius</p>
+
     <a href="/gallery">View Image Gallery</a>
+
+
+    <script>
+        // Function to update the displayed value using AJAX
+        function updateValue() {
+            // Create a new XMLHttpRequest object
+            var xhttp = new XMLHttpRequest();
+
+            // Define the function to handle the response
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Update the displayed value
+                    document.getElementById('displayValue').textContent = this.responseText;
+                }
+            };
+
+            // Open a GET request to the Flask server endpoint
+            xhttp.open("GET", "/get_value", true);
+
+            // Send the request
+            xhttp.send();
+        }
+
+        // Call the updateValue function every 5 seconds (adjust as needed)
+        setInterval(updateValue, 5000);
+    </script>
 </body>
 </html>

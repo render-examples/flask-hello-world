@@ -18,10 +18,36 @@ conn.commit()
 conn.close()
 flag = False
 
+temperature_value = 0.0
+
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', value=temperature_value)
+
+
+@app.route('/update', methods=['POST'])
+def update():
+    global temperature_value
+
+    try:
+        # Extract float value from the request
+        new_value = float(request.form['value'])
+        print(f'Received value: {new_value}')
+
+        # Update the current value
+        temperature_value = new_value
+
+        return 'OK', 200
+    except Exception as e:
+        print(f'Error: {e}')
+        return 'Error', 500
+
+
+@app.route('/get_value')
+def get_value():
+    global temperature_value
+    return str(temperature_value)
 
 
 @app.route('/trigger')
