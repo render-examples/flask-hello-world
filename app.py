@@ -1,6 +1,7 @@
 from crypt import methods
 from flask import Flask, render_template, request, jsonify
 import sqlite3
+import base64
 from SendEmail import send_email
 app = Flask(__name__)
 
@@ -66,3 +67,19 @@ def upload_file():
 def sendEmail():
     send_email()
     return "Email sent successfully"
+
+
+@app.route('/gallery')
+def image_gallery():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM images')
+    images = cursor.fetchall()
+    conn.close()
+
+    # Convert binary image data to base64 for display in HTML
+    for i, (image_id, image_data, image_date) in enumerate(images):
+        images[i] = (image_id, base64.b64encode(
+            image_data).decode('utf-8'), image_date)
+
+    return render_template('gallery.html', images=images)
