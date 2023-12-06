@@ -13,6 +13,7 @@
             <tr>
                 <th>ID</th>
                 <th>Image</th>
+                <th>Date</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +21,7 @@
                 <tr>
                     <td>{{ row[0] }}</td>
                     <td><img src="data:image/png;base64,{{ row[1] }}" alt="Image"></td>
+                    <td>{{ row[2] }}</td>
                 </tr>
             {% endfor %}
         </tbody>
