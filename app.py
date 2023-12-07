@@ -71,7 +71,7 @@ def trigger_action():
 def buttonPressed_action():
     global flag
     flag = True
-    return render_template('index.html')
+    return render_template('index.html', temperature=temperature_value, humidity=humidity_value)
 
 
 @app.route('/upload', methods=['POST'])
