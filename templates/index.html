@@ -10,8 +10,9 @@
         <button type="submit">Activate the alarm</button>
     </form>
     <br>
-    <h2>Current temperature in your home:</h2>
-    <p id="displayValue">{{ value }} celcius</p>
+    <h2>Current temperature and humidity in your home:</h2>
+    <p id="temperatureValue">{{ temperature }} celcius</p>
+    <p id="humidityValue">{{ humidity }} %</p>
 
     <a href="/gallery">View Image Gallery</a>
 
@@ -26,7 +27,9 @@
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     // Update the displayed value
-                    document.getElementById('displayValue').textContent = this.responseText+" celsius";
+                    var values = JSON.parse(this.responseText);
+                    document.getElementById('temperatureValue').textContent = values.temp+" celsius";
+                    document.getElementById('humidityValue').textContent = values.humi+" %";
                 }
             };
 

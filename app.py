@@ -20,24 +20,29 @@ conn.close()
 flag = False
 
 temperature_value = 0.0
+humidity_value = 0.0
 
 
 @app.route('/')
 def index():
-    return render_template('index.html', value=temperature_value)
+    return render_template('index.html', temperature=temperature_value, humidity=humidity_value)
 
 
 @app.route('/update', methods=['POST'])
 def update():
     global temperature_value
+    global humidity_value
 
     try:
         # Extract float value from the request
-        new_value = float(request.form['value'])
-        print(f'Received value: {new_value}')
+        new_value_temperature = float(request.form['temperature'])
+        new_value_humidity = float(request.form['humidity'])
+        print(f'Received value: {new_value_temperature}')
+        print(f'Received value: {new_value_humidity}')
 
         # Update the current value
-        temperature_value = new_value
+        temperature_value = new_value_temperature
+        humidity_value = new_value_humidity
 
         return 'OK', 200
     except Exception as e:
@@ -48,7 +53,8 @@ def update():
 @app.route('/get_value')
 def get_value():
     global temperature_value
-    return str(temperature_value)
+    global humidity_value
+    return jsonify({'temp': temperature_value, 'humi': humidity_value})
 
 
 @app.route('/trigger')
