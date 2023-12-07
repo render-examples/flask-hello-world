@@ -123,3 +123,12 @@ def image_gallery():
             image_data).decode('utf-8'), image_date)
 
     return render_template('gallery.html', images=images)
+
+
+@app.route('/empty')
+def delete_content():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM images')
+    conn.close()
+    return "Content deleted successfully from database"
