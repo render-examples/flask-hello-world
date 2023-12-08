@@ -1,10 +1,12 @@
 from crypt import methods
 from flask import Flask, render_template, request, jsonify
+from flask_httpauth import HTTPBasicAuth
 import sqlite3
 import base64
 from SendEmailPicture import send_email_picture
 from SendEmailTemperature import send_email_temperature
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 
 conn = sqlite3.connect("database.db")
 cursor = conn.cursor()
@@ -19,21 +21,28 @@ conn.commit()
 conn.close()
 flag = False
 
+user = {
+    "admin": "password"
+}
 temperature_value = 0.0
 humidity_value = 0.0
 
-# Define a list of valid API keys
-valid_api_keys = ["So4en2Secre2t"]
+# valid_api_keys = ["So4en2Secre2t"]
 
 
-@app.before_request
-def check_api_key():
-    api_key = request.headers.get("API-Key")
-    if api_key not in valid_api_keys:
-        return "Unauthorized", 401
+# @app.before_request
+# def check_api_key():
+#     api_key = request.headers.get("API-Key")
+#     if api_key not in valid_api_keys:
+#         return "Unauthorized", 401
+
+@auth.verify_password
+def verify_password(username, password):
+    return user.get(username) == password
 
 
 @app.route('/')
+@auth.login_required
 def index():
     return render_template('index.html', temperature=temperature_value, humidity=humidity_value)
 
