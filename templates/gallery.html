@@ -64,7 +64,7 @@ a:hover {
             {% for row in images %}
                 <tr>
                     <td>{{ row[0] }}</td>
-                    <td><img with="250" height="250" src="data:image/png;base64,{{ row[1] }}" alt="Image"></td>
+                    <td><img src="data:image/png;base64,{{ row[1] }}" alt="Image"></td>
                     <td>{{ row[2] }}</td>
                 </tr>
             {% endfor %}

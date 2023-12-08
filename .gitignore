@@ -107,3 +107,5 @@ testFromServer.py
 .gitignore
 image2.png
 testSendTemperature.py
+testRetrievingImage.py
+testCreationDatabase.py
