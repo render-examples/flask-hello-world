@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home radar web application</title>
+    <!-- <link rel="stylesheet" type="text/css" href="/templates/main.css"> -->
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+h2 {
+    color: #333;
+}
+
+p {
+    color: #555;
+}
+
+a {
+    display: block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #3498db;
+}
+
+a:hover {
+    color: #2980b9;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Home Radar main page</h1>
+    <br>
+    <form action="/buttonPressed" method="get">
+        <button type="submit">Activate the alarm</button>
+    </form>
+    <br>
+    <h2>Current temperature and humidity in your home:</h2>
+    <p id="temperatureValue">{{ temperature }} celcius</p>
+    <p id="humidityValue">{{ humidity }} %</p>
+
+    <a href="/gallery">View Image Gallery</a>
+    <a href="/empty">Delete all the content from the database</a>
+
+
+    <script>
+        // Function to update the displayed value using AJAX
+        function updateValue() {
+            // Create a new XMLHttpRequest object
+            var xhttp = new XMLHttpRequest();
+
+            // Define the function to handle the response
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Update the displayed value
+                    var values = JSON.parse(this.responseText);
+                    document.getElementById('temperatureValue').textContent = values.temp+" celsius";
+                    document.getElementById('humidityValue').textContent = values.humi+" %";
+                }
+            };
+
+            // Open a GET request to the Flask server endpoint
+            xhttp.open("GET", "/get_value", true);
+
+            // Send the request
+            xhttp.send();
+        }
+
+        // Call the updateValue function every 2 seconds (adjust as needed)
+        setInterval(updateValue, 2000);
+    </script>
+</body>
+</html>
