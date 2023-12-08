@@ -1,5 +1,6 @@
 from crypt import methods
-from flask import Flask, render_template, request, jsonify
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import sqlite3
 import base64
 from SendEmailPicture import send_email_picture
@@ -21,6 +22,16 @@ flag = False
 
 temperature_value = 0.0
 humidity_value = 0.0
+
+# Define a list of valid API keys
+valid_api_keys = ["So4en2Secre2t"]
+
+
+@app.before_request
+def check_api_key():
+    api_key = request.headers.get("API-Key")
+    if api_key not in valid_api_keys:
+        return "Unauthorized", 401
 
 
 @app.route('/')
