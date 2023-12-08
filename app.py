@@ -159,4 +159,4 @@ def delete_content():
     cursor.execute('DELETE FROM images')
     conn.commit()
     conn.close()
-    return "Content deleted successfully from database <br> <a href="/">Go back to main page</a>"
+    return """Content deleted successfully from database <br> <a href="/">Go back to main page</a>"""
