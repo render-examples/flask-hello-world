@@ -1,5 +1,5 @@
 from crypt import methods
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from flask_httpauth import HTTPBasicAuth
 import sqlite3
 import base64
@@ -48,6 +48,7 @@ def index():
 
 
 @app.route('/update', methods=['POST'])
+@auth.login_required
 def update():
     global temperature_value
     global humidity_value
@@ -77,6 +78,7 @@ def get_value():
 
 
 @app.route('/trigger')
+@auth.login_required
 def trigger_action():
     global flag
     if flag:
@@ -87,13 +89,15 @@ def trigger_action():
 
 
 @app.route('/buttonPressed', methods=['GET'])
+@auth.login_required
 def buttonPressed_action():
     global flag
     flag = True
-    return render_template('index.html', temperature=temperature_value, humidity=humidity_value)
+    return redirect('/')
 
 
 @app.route('/upload', methods=['POST'])
+@auth.login_required
 def upload_file():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'})
@@ -116,12 +120,14 @@ def upload_file():
 
 
 @app.route('/sendEmailPicture', methods=['GET'])
+@auth.login_required
 def sendEmailPicture():
     send_email_picture()
     return "Email with Picture sent successfully"
 
 
 @app.route('/sendEmailTemperature', methods=['GET'])
+@auth.login_required
 def sendEmailTemperature():
     global temperature_value
     send_email_temperature(temperature_value)
@@ -129,6 +135,7 @@ def sendEmailTemperature():
 
 
 @app.route('/gallery')
+@auth.login_required
 def image_gallery():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -145,6 +152,7 @@ def image_gallery():
 
 
 @app.route('/empty')
+@auth.login_required
 def delete_content():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
