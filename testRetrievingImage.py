@@ -15,6 +15,7 @@ conn.close()
 # Check if the image data was found
 if image_data:
     image_data = image_data[0]
+    a = 2
 
     # Convert binary image data to base64
     base64_data = base64.b64encode(image_data).decode('utf-8')
