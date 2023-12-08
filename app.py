@@ -1,6 +1,5 @@
 from crypt import methods
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 import sqlite3
 import base64
 from SendEmailPicture import send_email_picture
