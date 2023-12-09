@@ -19,8 +19,8 @@ def send_email_picture():
     conn.close()
 
     # Replace these values with your own email and server information
-    sender_email = "esp32project422@gmail.com"
-    receiver_email = "azhr.lrhezzioui@mail.concordia.ca"
+    sender_email = "put sender email"
+    receiver_email = "put receiver email here"
     subject = "Suspected activity in your house"
     body = """Greetings Azhr,
 
@@ -39,8 +39,8 @@ def send_email_picture():
     # Replace with your email server's information
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    smtp_username = "esp32project422@gmail.com"
-    smtp_password = "ijah yexk puwg ioov"
+    smtp_username = "put sender email here"
+    smtp_password = "put password generated here"
 
     # Create the MIME object
     message = MIMEMultipart()
