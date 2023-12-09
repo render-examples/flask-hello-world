@@ -1,4 +1,4 @@
-from crypt import methods
+mafrom crypt import methods
 from flask import Flask, render_template, request, jsonify, redirect
 from flask_httpauth import HTTPBasicAuth
 import sqlite3
@@ -22,7 +22,7 @@ conn.close()
 flag = False
 
 user = {
-    "admin": "password"
+    "username": "password" #put your username and password here
 }
 temperature_value = 0.0
 humidity_value = 0.0
