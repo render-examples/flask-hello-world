@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -144,6 +145,47 @@ def accept_plan():
     except Exception as e:
         # 例外が発生した場合はエラーメッセージを返す
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/v1/plans/check", methods=['GET'])
+def check_progress():
+    """
+    API Endpoint: /api/v1/plans/check
+    HTTP Method: GET
+
+    Check if the daily plans are on track.
+
+    Request:
+    - Method: GET
+
+    Response:
+    - Success (HTTP 200 OK):
+        If plans are on track
+    - Need Adjustment (HTTP 200 OK):
+        {
+            "message": "Plans need adjustment",
+            "adjusted_plans": [{"day": 1, "plans_today": [{"task": "cleaning", "award": 5}, ...]}, ...]
+        }
+    """
+
+    # ここでは単純に順調かどうかをランダムに決定
+    import random
+    is_on_track = random.choice([True, False])
+
+    if is_on_track:
+        # 順調な場合は200 OKを返す
+        return jsonify({"message": "Plans are on track"}), 200
+    else:
+        # 順調でない場合は新たなプランを提案し直す
+        adjusted_plans = suggest_adjusted_plans()
+        return jsonify({"message": "Plans need adjustment", "adjusted_plans": adjusted_plans}), 200
+
+def suggest_adjusted_plans():
+    # 新たなプラン生成のロジックを追加する
+    # ここでは単にランダムにプランを生成する例
+    num_days = random.randint(1, 7)
+    adjusted_plans = [{"day": day, "plans_today": [{"task": "cleaning", "award": 5}]} for day in range(1, num_days + 1)]
+    return adjusted_plans
 
 
 @app.route("/api/v1/submit", methods=["POST"])
