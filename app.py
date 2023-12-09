@@ -26,6 +26,27 @@ def hello_world():
     return jsonify(data), 200
 
 
+@app.route("/api/v1/plans/accept")
+def accept_plan():
+    """
+    API Endpoint: /api/v1/plans/accept
+    HTTP Method: GET
+
+    Accept the plan.
+
+    Request:
+    - Method: GET
+
+    Response:
+    - Success (HTTP 200 OK):
+        {
+            "message": "Plan accepted"
+        }
+    """
+    data = {"message": "Plan accepted"}
+    return jsonify(data), 200
+
+
 @app.route("/api/v1/submit", methods=["POST"])
 def submit():
     """
