@@ -94,25 +94,56 @@ def generate_daily_plans(goal, goal_points, tasks):
     return plans
 
 
-@app.route("/api/v1/plans/accept")
+@app.route("/api/v1/plans/accept", methods=['POST'])
 def accept_plan():
     """
     API Endpoint: /api/v1/plans/accept
-    HTTP Method: GET
+    HTTP Method: POST
 
-    Accept the plan.
+    Accept the suggested daily plans.
 
     Request:
-    - Method: GET
+    - Method: POST
+    - Headers:
+        Content-Type: application/json
+    - Body (JSON):
+        {
+            "goal": "computer",
+            "goal_points": 100,
+            "tasks": [
+                {"task": "cleaning", "award": 5},
+                {"task": "wash dishes", "award": 2}
+            ]
+        }
 
     Response:
     - Success (HTTP 200 OK):
         {
             "message": "Plan accepted"
         }
+    - Bad Request (HTTP 400 Bad Request):
+        {
+            "error": "Invalid data format"
+        }
     """
-    data = {"message": "Plan accepted"}
-    return jsonify(data), 200
+
+    try:
+        # POSTリクエストのボディからJSONデータを取得
+        request_data = request.get_json()
+
+        # 必要なデータが揃っているか確認
+        if 'goal' in request_data and 'goal_points' in request_data and 'tasks' in request_data:
+            # プランを受け入れるロジック (ここでは特に処理なし)
+            # レスポンスとしてメッセージを返す
+            data = {"message": "Plan accepted"}
+            return jsonify(data), 200
+        else:
+            # 必要なデータが見つからない場合はエラーメッセージを返す
+            return jsonify({"error": "Invalid data format"}), 400
+
+    except Exception as e:
+        # 例外が発生した場合はエラーメッセージを返す
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/v1/submit", methods=["POST"])
