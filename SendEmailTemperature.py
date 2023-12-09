@@ -9,8 +9,8 @@ import base64
 def send_email_temperature(temperature):
 
     # Replace these values with your own email and server information
-    sender_email = "esp32project422@gmail.com"
-    receiver_email = "azhr.lrhezzioui@mail.concordia.ca"
+    sender_email = "put sender email here"
+    receiver_email = "put receiver here"
     subject = "High temperature in the house"
     body = f"""Greetings Azhr,
 
@@ -26,8 +26,8 @@ def send_email_temperature(temperature):
     # Replace with your email server's information
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    smtp_username = "esp32project422@gmail.com"
-    smtp_password = "ijah yexk puwg ioov"
+    smtp_username = "put sender email here"
+    smtp_password = "put password here"
 
     # Create the MIME object
     message = MIMEMultipart()
