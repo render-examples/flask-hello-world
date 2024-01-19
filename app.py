@@ -14,7 +14,35 @@ lessons = [
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World! Local testing'
+    # Create the main application window
+    root = tk.Tk()
+
+    # Set the size of the window to 640x800 pixels
+    root.geometry("800x640")
+
+    # Set a title for the window
+    root.title("Application Window")
+
+    root.configure(bg="grey")
+
+    def change_button(old_button):
+        old_button.place_forget()  # This removes the old button
+        create_trolled_button()
+
+    def create_trolled_button():
+        x_pos = random.randint(0, 750)
+        y_pos = random.randint(0, 610)
+        trolled_button = tk.Button(root, text="Get Trolled", command=lambda:
+        [trolled_button.place_forget(), create_trolled_button()])
+        trolled_button.pack()
+        trolled_button.place(x=x_pos, y=y_pos)
+
+    play_button = tk.Button(root, text="Play", command=lambda: change_button(play_button), fg="black", bg="white")
+    play_button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
+    # Run the application
+    root.mainloop()
+    return 'Hello, World! Local testing123'
 
 @app.route('/lessons')
 def get_lessons():
