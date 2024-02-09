@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klaviatura</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+    <h1>Piano Virtuosso~</h1>
+    <br>
+    <button id="rec">Record</button>
+    <button id="jsonPrev">Preview Json</button>
+    <p id="rand">Database storage</p>
+    <div id="dataCont">
+        <ul>
+            <li>Test</li>
+            <li>Time: 11.3 seconds.</li>
+        </ul>
+    </div>
+    <div id="container">
+        <!-- Inserting piano tiles here -->
+    </div>
+    <!-- button that sends data to db -->
+    <input type="button" value="Save" onclick="onSaveClick()">
+</body>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</html>

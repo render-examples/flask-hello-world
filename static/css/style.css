@@ -1,0 +1,62 @@
+body {
+    width: 100%;
+    padding-left: 1%;
+    height: 100%;
+    margin: 5px;
+    background-color: #b0c4de;
+}
+
+h1 {
+    margin-bottom: 39px;
+}
+
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.piano-tile {
+    display: flex;
+    text-align: center;
+    align-items: flex-start;
+    padding-top: 19%;
+    justify-content: center;
+    user-select: none;
+    width: 47px;
+    /* Adjust the width as needed */
+    height: 250px;
+    /* Adjust the height as needed */
+    background-color: white;
+    border: 3px solid black;
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Ensures;
+    color: Red;
+    margin: 15px 1px;
+    box-sizing: border-box;
+    /* Ensures that the border width is included in the total width and height */
+}
+
+.active {
+    background: linear-gradient(to top, rgb(22 2, 22, 22), white);
+}
+
+#rand {
+    font-style: italic;
+}
+
+button {
+    padding: 7px 14px;
+    color: Red;
+    background-color: black;
+    font-family: Tahoma;
+    font-size: 12 px;
+}
+
+.recording {
+    font-style: italic;
+    font-weight: 900;
+}

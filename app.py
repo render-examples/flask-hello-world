@@ -1,9 +1,11 @@
-from flask import Flask
+from flask import Flask, render_template, redirect
 from flask import jsonify
 from flask import request
 import tkinter as tk
+from flask_cors import CORS
 import random
 app = Flask(__name__)
+CORS(app)
 
 lessons = [
     {"id": 1, "name": "Python programing", "credits": 5},
@@ -14,39 +16,19 @@ lessons = [
 
 @app.route('/')
 def hello_world():
-    # Create the main application window
-    root = tk.Tk()
+    return 'Hello, World! Local testing1243'
 
-    # Set the size of the window to 640x800 pixels
-    root.geometry("800x640")
+@app.route('/lessons-jinja')
+def get_lessons_jinja():
+    return render_template("home.html", les=lessons)
 
-    # Set a title for the window
-    root.title("Application Window")
-
-    root.configure(bg="grey")
-
-    def change_button(old_button):
-        old_button.place_forget()  # This removes the old button
-        create_trolled_button()
-
-    def create_trolled_button():
-        x_pos = random.randint(0, 750)
-        y_pos = random.randint(0, 610)
-        trolled_button = tk.Button(root, text="Get Trolled", command=lambda:
-        [trolled_button.place_forget(), create_trolled_button()])
-        trolled_button.pack()
-        trolled_button.place(x=x_pos, y=y_pos)
-
-    play_button = tk.Button(root, text="Play", command=lambda: change_button(play_button), fg="black", bg="white")
-    play_button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-
-    # Run the application
-    root.mainloop()
-    return 'Hello, World! Local testing123'
-
-@app.route('/lessons')
-def get_lessons():
+@app.route('/lessons-javascript')
+def get_lessons_javascript():
     return jsonify(lessons)
+
+@app.route('/home-javascript')
+def load_home_js():
+    return render_template("home-js.html")
 
 if __name__ == "__main__":
     app.run()
@@ -66,35 +48,18 @@ def delete_lesson(lesson_id):
     for lesson in lessons:
         if lesson["id"] == int(lesson_id):
             lessons.remove(lesson)
-    return jsonify(lessons)
+    # return jsonify(lessons)
+    return redirect("/lessons-jinja")
 
-@app.route('/test')
-def test():
-    # Create the main application window
-    root = tk.Tk()
 
-    # Set the size of the window to 640x800 pixels
-    root.geometry("800x640")
+my_recordings = {}
 
-    # Set a title for the window
-    root.title("Application Window")
+@app.route('/saveRecording', methods=["POST"])
+def saveRecording():
+    data = request.get_json()
+    print(data)
+    return {"status" : "OK"}
 
-    root.configure(bg="grey")
 
-    def change_button(old_button):
-        old_button.place_forget()  # This removes the old button
-        create_trolled_button()
 
-    def create_trolled_button():
-        x_pos = random.randint(0, 750)
-        y_pos = random.randint(0, 610)
-        trolled_button = tk.Button(root, text="Get Trolled", command=lambda:
-        [trolled_button.place_forget(), create_trolled_button()])
-        trolled_button.pack()
-        trolled_button.place(x=x_pos, y=y_pos)
-
-    play_button = tk.Button(root, text="Play", command=lambda: change_button(play_button), fg="black", bg="white")
-    play_button.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-
-    # Run the application
-    root.mainloop()
+# SAVE, DELETE, SHOW
