@@ -6,24 +6,11 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 CORS(app)
 
-db = SQLAlchemy()
-
-@app.route('/')
-def hello_world():
-    return render_template("home.html", my_rec=recordings)
-
-if __name__ == "__main__":
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://robert:LTrCCDwSsyrNhFKffv5TewRi1TQXX9Hs@dpg-cn3qur5jm4es73bmkga0-a.frankfurt-postgres.render.com/recordingsdatabase'
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
-    app.run()
-
-
-
-# SAVE, DELETE, SHOW
-
-# Database integration
+print("start connection to db")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://robert:LTrCCDwSsyrNhFKffv5TewRi1TQXX9Hs@dpg-cn3qur5jm4es73bmkga0-a.frankfurt-postgres.render.com/recordingsdatabase'
+app.config['SQLALCHEMY_ECHO'] = True
+db = SQLAlchemy(app)
+print("connected to db")
 
 class Recording(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
@@ -37,23 +24,49 @@ class Recording(db.Model):
             "data": self.data
         }
 
+with app.app_context():
+    print("Creating database tables...")
+    db.create_all()
+    print("Tables created.")
+
+# My recordings JS to Flask RESTful API
+recordings = {}
+
+
+@app.route('/')
+def hello_world():
+    return render_template("home.html", my_rec=recordings)
+
+
+if __name__ == "__main__":
+    print("Starting application...")
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
+
+
+# SAVE, DELETE, SHOW
+
+# Database integration
+
+
+
 def jsonify_recordings(recordings):
     result = []
     for recording in recordings:
         result.append({
             "id": recording.id,
             "name": recording.name,
-            # "description": recording.description
+            "data": recording.data
         })
     return result
 
-# My recordings JS to Flask RESTful API
-recordings = {}
 
 
 @app.route('/saveRecording', methods=["POST"])
 def saveRecording():
     data = request.get_json()  # This is your dataOfClicks from the frontend
+    print(data)
     if not data:
         return jsonify({"error": "No data provided"}), 400
 

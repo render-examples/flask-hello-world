@@ -224,10 +224,12 @@ function stopRecording() {
 function onSaveClick() {
     // Assuming dataOfClicks is already populated with your clicks data in the correct format
     // First, create an object with the name and clicks keys
+    console.log(dataOfClicks);
     const recordingData = {
         "name": "My Recording", // Set the recording name as desired
         "clicks": dataOfClicks // Your existing clicks data
     };
+    console.log(recordingData);
 
     // Then, proceed with the fetch request, sending recordingData as the body
     fetch("https://onkrajreda.onrender.com/saveRecording", {
