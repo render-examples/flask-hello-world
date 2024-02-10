@@ -158,12 +158,12 @@ for (const tile of pianoTiles) {
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 // Variable of global scope initialization.
-const dataOfClicks = [];
+let dataOfClicks = [];
 let startTime;
 let dataLi;
 let recordedTime;
 
-function timeNkey(tile, dataLi) {
+function timeNkey(tile) {
     const time = Date.now() - startTime;
     const key = tile.id;
     const json = {
@@ -222,23 +222,36 @@ function stopRecording() {
 }
 
 function onSaveClick() {
-    fetch("http://localhost:5000/saveRecording", {
-        method: "post",
+    // Assuming dataOfClicks is already populated with your clicks data in the correct format
+    // First, create an object with the name and clicks keys
+    const recordingData = {
+        "name": "My Recording", // Set the recording name as desired
+        "clicks": dataOfClicks // Your existing clicks data
+    };
+
+    // Then, proceed with the fetch request, sending recordingData as the body
+    fetch("https://onkrajreda.onrender.com/saveRecording", {
+        method: "POST",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        //tuki pride json
-        body: JSON.stringify([{
-            time: 1,
-            key: "F"
-        },
-        {
-            time: 12,
-            key: "G"
-        }])
+        body: JSON.stringify(recordingData) // Convert the recordingData object into a JSON string
     })
-        .then((response) => {
-            console.log(response)
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse JSON response body
+    })
+    .then(data => {
+        console.log(data); // Handle success
+    })
+    .catch(error => {
+        console.error('Error:', error); // Handle errors, such as network issues
+    });
+
+    // Optionally, clear dataOfClicks if you don't need it anymore after sending
+    dataOfClicks = [];
 }
+
