@@ -1,4 +1,5 @@
-
+// Map of note frequencies, associating musical notes with their frequencies
+// for sound generation.
 const notesFreq = new Map([
     ['C4', 261.625],
     ['D4', 293.665],
@@ -25,10 +26,8 @@ const notesFreq = new Map([
 ]);
 
 
-
+// Initialize piano keys on the webpage dynamically based on the notesFreq map.
 const container = document.querySelector('#container');
-
-// Using forEach
 notesFreq.forEach((value, key) => {
     const pianoKey = document.createElement('div');
     pianoKey.id = key;
@@ -38,16 +37,15 @@ notesFreq.forEach((value, key) => {
 });
 
 
-
+// Select all dynamically created piano keys for interaction.
 const pianoTiles = document.querySelectorAll('.piano-tile');
-// Function to start playing the note and change CSS
-
+// Active oscillators map to keep track of currently playing notes.
 const activeOscillators = new Map();
-
+// Function to create an oscillator and gain node for playing a note.
 function createOscillatorAndGainNode(pitch) {
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
-
+    // Custom waveform for a more natural piano sound.
     // Define the harmonic content for the custom waveform
     const numberOfHarmonics = 4;
     const real = new Float32Array(numberOfHarmonics);
@@ -64,10 +62,10 @@ function createOscillatorAndGainNode(pitch) {
     // Create the custom periodic waveform based on the defined harmonics
     const customWave = audioContext.createPeriodicWave(real, imag);
     oscillator.setPeriodicWave(customWave);
-
+    // Set pitch.
     oscillator.frequency.setValueAtTime(pitch, audioContext.currentTime);
 
-    // ADSR Envelope
+    // ADSR Envelope for realistic note attack and decay.
     gainNode.gain.setValueAtTime(0, audioContext.currentTime); // Start with no volume
     const attackTime = 0.02; // Attack
     gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + attackTime); // Ramp to full volume
@@ -83,35 +81,44 @@ function createOscillatorAndGainNode(pitch) {
 }
 
 
+// Start playing a note.
 function startNote() {
+    // Note is the ID of the clicked/touched piano key.
     const note = this.id;
+    // Retrieve frequency from map.
     const pitch = notesFreq.get(note);
+    // Visual feedback for key press.
     this.classList.add('active');
 
 
-    // Stop any existing note for this key
+    // Stop any previously playing oscillator for this note.
     if (activeOscillators.has(note)) {
         const existing = activeOscillators.get(note);
         existing.oscillator.stop();
         existing.oscillator.disconnect();
         existing.gainNode.disconnect();
     }
-
+    // Create and start a new oscillator for this note.
     const { oscillator, gainNode } = createOscillatorAndGainNode(pitch);
     oscillator.start();
     const noteEventId = Date.now();
     activeOscillators.set(note, { oscillator, gainNode, noteEventId });
 }
 
+
+// Stop playing a note.
 function stopNote() {
     const note = this.id;
     this.classList.remove('active');
     const releaseTime = audioContext.currentTime;
+    // Exit if no oscillator is playing this note.
     if (!activeOscillators.has(note)) {
         return;
     }
+    // Retrieve and stop the oscillator for this note.
     if (activeOscillators.has(note)) {
         const { oscillator, gainNode, noteEventId } = activeOscillators.get(note);
+        // Time for the note to fade out.
         const decayDuration = 2;
         gainNode.gain.cancelScheduledValues(releaseTime);
         gainNode.gain.setValueAtTime(gainNode.gain.value, releaseTime); // New line to set current gain
@@ -131,7 +138,6 @@ function stopNote() {
 
 // PC touch event handler
 let isMouseDown = false;
-
 document.addEventListener('pointerdown', function (event) {
     if (event.buttons === 1) { // Check if left mouse button
         isMouseDown = true;
@@ -139,9 +145,9 @@ document.addEventListener('pointerdown', function (event) {
 }, false);
 document.addEventListener('pointerup', function () {
     isMouseDown = false;
-    // Optionally, stop the note here if you want notes to stop when the mouse is released
 }, false);
 
+// Setup to handle user interactions with piano keys.
 for (const tile of pianoTiles) {
     tile.addEventListener('pointerdown', startNote);
     tile.addEventListener('pointerup', stopNote);
@@ -154,7 +160,7 @@ for (const tile of pianoTiles) {
 }
 
 
-// Create a new audio context
+// Initialize the audio context used for playing notes.
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 // Variable of global scope initialization.
@@ -164,6 +170,8 @@ let dataLi;
 let recordedTime;
 let recordingName;
 
+
+// Function to capture the time and key when a note is played or released.
 function timeNkey(tile) {
     const time = Date.now() - startTime;
     const key = tile.id;
@@ -174,6 +182,8 @@ function timeNkey(tile) {
     dataOfClicks.push(json);
 }
 
+
+// Starts recording user input.
 function record() {
     recording = true;
     recBtn.classList.add('recording');
@@ -181,7 +191,9 @@ function record() {
     dataLi = document.querySelector('#dataCont li');
     startTime = Date.now();
     dataLi.id = startTime;
+    // Continuously update the display with the recording duration.
     showTimeOfRecording(startTime, dataLi);
+    // Add event listeners to all piano tiles for capturing clicks.
     for (const tile of pianoTiles) {
         tile.addEventListener('pointerdown', () => timeNkey(tile));
         tile.addEventListener('pointerup', () => timeNkey(tile));
@@ -189,10 +201,14 @@ function record() {
     recBtn.addEventListener("click", () => stopRecording(dataLi), { once: true });
 }
 
+// Function to display a preview of the recorded data in the console. DEV only
 function preview() {
     console.log(JSON.stringify(dataOfClicks, null, 1));
 }
 
+
+
+// Initialization of recording controls.
 const recBtn = document.querySelector("#rec");
 recBtn.addEventListener("click", record, { once: true });
 
@@ -201,6 +217,9 @@ const jsonBtn = document.querySelector("#jsonPrev");
 
 let recording = false;
 
+
+
+// Updates the display with the current recording duration.
 function showTimeOfRecording(time, dataLi) {
     if (recording) {
         const newTime = Date.now();
@@ -211,6 +230,7 @@ function showTimeOfRecording(time, dataLi) {
     }
 }
 
+// Stops the recording process.
 function stopRecording() {
     recordingName = prompt("Please enter a name for the recording:", "enter name");
 
@@ -228,9 +248,10 @@ function stopRecording() {
     dataLi.innerText = `Recording saved. Duration - ${(recordedTime / 1000).toFixed(2)} seconds.`
 }
 
+
+// Saves the recorded data to the server.
 function saveData() {
-    // First, create an object with the name and clicks keys
-    console.log(dataOfClicks);
+    // Package the recording name and data.
     const recordingData = {
         "name": recordingName, // Set the recording name as desired
         "clicks": dataOfClicks // data
@@ -259,32 +280,41 @@ function saveData() {
         console.error('Error:', error); // Handle errors, such as network issues
     });
     fetchRecordings();
-    // clear dataOfClicks
+    // clear dataOfClicks for next use
     dataOfClicks = [];
 }
 
+
+
+// Fetches the list of recordings from the server and updates the UI to display them.
 function fetchRecordings() {
     fetch("https://onkrajreda.onrender.com/list-recordings")
-        .then(response => response.json())
+        .then(response => response.json()) // Parse the JSON response.
         .then(data => {
             const tbody = document.getElementById('recordingsTable').getElementsByTagName('tbody')[0];
-            tbody.innerHTML = ''; // Clear existing rows
+            tbody.innerHTML = ''; // Clear the table body to ensure fresh display of recordings.
+            // Iterate through each recording received from the server.
             data.forEach(recording => {
+                // Create a new row for each recording with its ID, name, and action buttons.
                 const row = tbody.insertRow();
                 row.insertCell().textContent = recording.id;
                 row.insertCell().textContent = recording.name;
+
+                // Create and append a 'Play' button for each recording.
                 const playCell = row.insertCell();
                 const playButton = document.createElement('button');
                 playButton.textContent = 'Play';
                 playButton.onclick = () => playRecording(recording.id, recording.data);
                 playCell.appendChild(playButton);
 
+                // Create and append a 'Rename' button for each recording.
                 const renameCell = row.insertCell();
                 const renameButton = document.createElement('button');
                 renameButton.textContent = 'Rename';
                 renameButton.onclick = () => renameRecording(recording.id);
                 renameCell.appendChild(renameButton);
 
+                // Create and append a 'Delete' button for each recording.
                 const deleteCell = row.insertCell();
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
@@ -294,6 +324,8 @@ function fetchRecordings() {
         });
 }
 
+
+// Prompts the user for a new name and sends a request to the server to rename a recording.
 function renameRecording(id) {
     const newName = prompt('Enter new name:');
     if (newName) {
@@ -302,7 +334,7 @@ function renameRecording(id) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id, newName }),
+            body: JSON.stringify({ id, newName }), // Send the new name along with the recording ID.
         })
         .then(response => response.json())
         .then(data => {
@@ -315,6 +347,7 @@ function renameRecording(id) {
     }
 }
 
+// Confirms with the user before sending a request to the server to delete a recording.
 function deleteRecording(id) {
     if (confirm('Are you sure you want to delete this recording?')) {
         fetch('https://onkrajreda.onrender.com/delete-recording', {
@@ -322,7 +355,7 @@ function deleteRecording(id) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id }),
+            body: JSON.stringify({ id }), // Send the recording ID to be deleted.
         })
         .then(response => response.json())
         .then(data => {
@@ -336,6 +369,7 @@ function deleteRecording(id) {
 }
 
 
+// Same as startNote but modified for automatic replay
 function startNoteAutoplay(key) {
     const note = key;
     const pitch = notesFreq.get(note);
@@ -356,6 +390,7 @@ function startNoteAutoplay(key) {
     activeOscillators.set(note, { oscillator, gainNode, noteEventId });
 }
 
+// Same as stopNote but modified for automatic replay
 function stopNoteAutoplay(key) {
     const note = key;
     const tile = document.querySelector(`#${key}`);
@@ -377,17 +412,12 @@ function stopNoteAutoplay(key) {
     }, decayDuration * 1000);
 }
 
- /*[{"time": 878, "key": "E4"}, {"time": 984, "key": "E4"}, {"time": 1516, "key": "E4"}, {"time": 1609, "key": "E4"},
- {"time": 2179, "key": "F4"}, {"time": 2279, "key": "F4"}, {"time": 2765, "key": "F4"}, {"time": 2869, "key": "F4"},
- {"time": 3405, "key": "A4"}, {"time": 3479, "key": "A4"}, {"time": 4019, "key": "A4"}, {"time": 4085, "key": "A4"},
- {"time": 4656, "key": "G4"}, {"time": 4735, "key": "G4"}]
-  */
 
-
+// Plays the playback of the recording with note timings and keys
 function playRecording(id, jsonData) {
     console.log('Playing recording:', id, 'data: ', jsonData);
-    const data = JSON.parse(jsonData);
-    data.forEach(({time, key}) => {
+    const data = JSON.parse(jsonData); // parse json
+    data.forEach(({time, key}) => { // iterate over each press
         console.log(`key - ${key}, time - ${time}ms`);
         setTimeout(function () {
             if(!activeOscillators.has(key)) {
@@ -395,8 +425,9 @@ function playRecording(id, jsonData) {
             } else {
                 stopNoteAutoplay(key); // Stop the note if it is playing
             }
-        }, time);
+        }, time); // activate start or stop given the recorded time of key press
     });
 }
 
+// Start the website by populating the table with server data
 fetchRecordings();
