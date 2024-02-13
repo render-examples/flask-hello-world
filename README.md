@@ -18,11 +18,11 @@ This JavaScript code implements a virtual piano application with functionality f
 - **CRUD Operations for Recordings**: Communicates with a backend server to save, list, rename, and delete recordings. This involves sending HTTP requests and handling responses to reflect changes in the UI dynamically.
 
 ### Web Application Interactions
-- **Fetching and Displaying Recordings**: Retrieves a list of saved recordings from the server and updates the UI to allow users to play, rename, or delete recordings.
+- **Fetching and Displaying Recordings**: Retrieves a list of saved recordings from the server and updates the UI to allow users to **play**, **rename**, or **delete** recordings.
 - **Server Communication**: Uses `fetch` API to send and receive data from the server, handling both the creation of new recordings and the retrieval of existing ones.
 
 ### Considerations and Enhancements
 - The application emphasizes the use of the Web Audio API for sound generation and control, showcasing how web technologies can create interactive musical experiences.
 - It demonstrates handling of complex user interactions, dynamic content creation, and communication with a server-side application for persistent storage.
 
-This code serves as a practical example of combining various web technologies to build an interactive application, suitable for a university-level computer science project. It illustrates key concepts such as DOM manipulation, event handling, asynchronous JavaScript, and working with the Web Audio API.
+This code serves as a practical example of combining various web technologies to build an interactive application. It illustrates key concepts such as DOM manipulation, event handling, asynchronous JavaScript, and working with the Web Audio API.
