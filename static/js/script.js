@@ -162,6 +162,7 @@ let dataOfClicks = [];
 let startTime;
 let dataLi;
 let recordedTime;
+let recordingName;
 
 function timeNkey(tile) {
     const time = Date.now() - startTime;
@@ -177,29 +178,26 @@ function record() {
     recording = true;
     recBtn.classList.add('recording');
     recBtn.innerText = 'Recording...';
-    dataLi = document.createElement('li');
+    dataLi = document.querySelector('#dataCont li');
     startTime = Date.now();
     dataLi.id = startTime;
-    document.querySelector('ul').appendChild(dataLi);
     showTimeOfRecording(startTime, dataLi);
     for (const tile of pianoTiles) {
-        tile.addEventListener('pointerdown', () => timeNkey(tile, dataLi));
-        tile.addEventListener('pointerup', () => timeNkey(tile, dataLi));
+        tile.addEventListener('pointerdown', () => timeNkey(tile));
+        tile.addEventListener('pointerup', () => timeNkey(tile));
     }
     recBtn.addEventListener("click", () => stopRecording(dataLi), { once: true });
 }
 
 function preview() {
-    const novLi = document.createElement('li');
-    document.querySelector('ul').appendChild(novLi);
-    novLi.innerText = JSON.stringify(dataOfClicks, null, 1);
+    console.log(JSON.stringify(dataOfClicks, null, 1));
 }
 
 const recBtn = document.querySelector("#rec");
 recBtn.addEventListener("click", record, { once: true });
 
 const jsonBtn = document.querySelector("#jsonPrev");
-jsonBtn.addEventListener("click", preview);
+/*jsonBtn.addEventListener("click", preview);*/
 
 let recording = false;
 
@@ -214,20 +212,28 @@ function showTimeOfRecording(time, dataLi) {
 }
 
 function stopRecording() {
+    recordingName = prompt("Please enter a name for the recording:", "enter name");
+
+    if (recordingName !== null && recordingName !== "") {
+        console.log("Recording name saved:", recordingName);
+    } else {
+        recordingName = "My Recording";
+    }
+
+    saveData();
     recBtn.addEventListener("click", record, { once: true });
     recording = false;
     recBtn.classList.remove('recording');
     recBtn.innerText = 'Record';
-    dataLi.innerText = `Recording saved.Duration - ${(recordedTime / 1000).toFixed(2)} seconds.`
+    dataLi.innerText = `Recording saved. Duration - ${(recordedTime / 1000).toFixed(2)} seconds.`
 }
 
-function onSaveClick() {
-    // Assuming dataOfClicks is already populated with your clicks data in the correct format
+function saveData() {
     // First, create an object with the name and clicks keys
     console.log(dataOfClicks);
     const recordingData = {
-        "name": "My Recording", // Set the recording name as desired
-        "clicks": dataOfClicks // Your existing clicks data
+        "name": recordingName, // Set the recording name as desired
+        "clicks": dataOfClicks // data
     };
     console.log(recordingData);
 
@@ -252,8 +258,145 @@ function onSaveClick() {
     .catch(error => {
         console.error('Error:', error); // Handle errors, such as network issues
     });
-
-    // Optionally, clear dataOfClicks if you don't need it anymore after sending
+    fetchRecordings();
+    // clear dataOfClicks
     dataOfClicks = [];
 }
 
+function fetchRecordings() {
+    fetch("https://onkrajreda.onrender.com/list-recordings")
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('recordingsTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ''; // Clear existing rows
+            data.forEach(recording => {
+                const row = tbody.insertRow();
+                row.insertCell().textContent = recording.id;
+                row.insertCell().textContent = recording.name;
+                const playCell = row.insertCell();
+                const playButton = document.createElement('button');
+                playButton.textContent = 'Play';
+                playButton.onclick = () => playRecording(recording.id, recording.data);
+                playCell.appendChild(playButton);
+
+                const renameCell = row.insertCell();
+                const renameButton = document.createElement('button');
+                renameButton.textContent = 'Rename';
+                renameButton.onclick = () => renameRecording(recording.id);
+                renameCell.appendChild(renameButton);
+
+                const deleteCell = row.insertCell();
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteRecording(recording.id);
+                deleteCell.appendChild(deleteButton);
+            });
+        });
+}
+
+function renameRecording(id) {
+    const newName = prompt('Enter new name:');
+    if (newName) {
+        fetch('https://onkrajreda.onrender.com/rename-recording', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id, newName }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                fetchRecordings(); // Refresh the table
+            } else {
+                alert('Rename failed');
+            }
+        });
+    }
+}
+
+function deleteRecording(id) {
+    if (confirm('Are you sure you want to delete this recording?')) {
+        fetch('https://onkrajreda.onrender.com/delete-recording', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                fetchRecordings(); // Refresh the table
+            } else {
+                alert('Delete failed');
+            }
+        });
+    }
+}
+
+
+function startNoteAutoplay(key) {
+    const note = key;
+    const pitch = notesFreq.get(note);
+    const tile = document.querySelector(`#${key}`);
+    tile.classList.add('active');
+
+    // Stop any existing note for this key
+    if (activeOscillators.has(note)) {
+        const existing = activeOscillators.get(note);
+        existing.oscillator.stop();
+        existing.oscillator.disconnect();
+        existing.gainNode.disconnect();
+    }
+
+    const { oscillator, gainNode } = createOscillatorAndGainNode(pitch);
+    oscillator.start();
+    const noteEventId = Date.now();
+    activeOscillators.set(note, { oscillator, gainNode, noteEventId });
+}
+
+function stopNoteAutoplay(key) {
+    const note = key;
+    const tile = document.querySelector(`#${key}`);
+    tile.classList.remove('active');
+    const releaseTime = audioContext.currentTime;
+    const { oscillator, gainNode, noteEventId } = activeOscillators.get(note);
+    const decayDuration = 2;
+    gainNode.gain.cancelScheduledValues(releaseTime);
+    gainNode.gain.setValueAtTime(gainNode.gain.value, releaseTime); // New line to set current gain
+    gainNode.gain.exponentialRampToValueAtTime(0.001, releaseTime + decayDuration);
+    setTimeout(() => {
+        // Check if the current note event is still the one that should be stopped
+        if (activeOscillators.has(note) && activeOscillators.get(note).noteEventId === noteEventId) {
+            oscillator.stop();
+            oscillator.disconnect();
+            gainNode.disconnect();
+            activeOscillators.delete(note);
+        }
+    }, decayDuration * 1000);
+}
+
+ /*[{"time": 878, "key": "E4"}, {"time": 984, "key": "E4"}, {"time": 1516, "key": "E4"}, {"time": 1609, "key": "E4"},
+ {"time": 2179, "key": "F4"}, {"time": 2279, "key": "F4"}, {"time": 2765, "key": "F4"}, {"time": 2869, "key": "F4"},
+ {"time": 3405, "key": "A4"}, {"time": 3479, "key": "A4"}, {"time": 4019, "key": "A4"}, {"time": 4085, "key": "A4"},
+ {"time": 4656, "key": "G4"}, {"time": 4735, "key": "G4"}]
+  */
+
+
+function playRecording(id, jsonData) {
+    console.log('Playing recording:', id, 'data: ', jsonData);
+    const data = JSON.parse(jsonData);
+    data.forEach(({time, key}) => {
+        console.log(`key - ${key}, time - ${time}ms`);
+        setTimeout(function () {
+            if(!activeOscillators.has(key)) {
+                startNoteAutoplay(key); // Start the note if not already playing
+            } else {
+                stopNoteAutoplay(key); // Stop the note if it is playing
+            }
+        }, time);
+    });
+}
+
+fetchRecordings();

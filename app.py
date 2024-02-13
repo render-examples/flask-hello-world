@@ -26,6 +26,7 @@ class Recording(db.Model):
 
 with app.app_context():
     print("Creating database tables...")
+    # db.drop_all() delete all tables for dev only
     db.create_all()
     print("Tables created.")
 
@@ -79,3 +80,36 @@ def saveRecording():
     db.session.commit()
 
     return jsonify({"status": "OK", "id": new_recording.id})
+
+@app.route('/list-recordings', methods=['GET'])
+def list_recordings():
+    recordings = Recording.query.order_by(Recording.id).all()  # Fetch all recordings from the database, + sort recordings by ID
+    return jsonify([recording.serialize() for recording in recordings])
+
+@app.route('/rename-recording', methods=['POST'])
+def rename_recording():
+    data = request.get_json()
+    if not data or 'id' not in data or 'newName' not in data:
+        return jsonify({"error": "Invalid request"}), 400
+
+    recording = Recording.query.get(data['id'])
+    if recording:
+        recording.name = data['newName']
+        db.session.commit()
+        return jsonify({"success": True, "id": recording.id, "newName": recording.name})
+    else:
+        return jsonify({"error": "Recording not found"}), 404
+
+@app.route('/delete-recording', methods=['POST'])
+def delete_recording():
+    data = request.get_json()
+    if not data or 'id' not in data:
+        return jsonify({"error": "Invalid request"}), 400
+
+    recording = Recording.query.get(data['id'])
+    if recording:
+        db.session.delete(recording)
+        db.session.commit()
+        return jsonify({"success": True, "id": data['id']})
+    else:
+        return jsonify({"error": "Recording not found"}), 404
