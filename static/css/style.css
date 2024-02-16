@@ -1,0 +1,116 @@
+html, body {
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    padding-left: 1%;
+    height: 100%;
+    margin: 5px;
+    background-color: #b0c4de;
+}
+
+h1 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin-bottom: 70px;
+    font-size: 4em;
+    margin-top: 20px;
+}
+
+#container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.piano-tile {
+    display: flex;
+    text-align: center;
+    align-items: flex-start;
+    padding-top: 19%;
+    justify-content: center;
+    user-select: none;
+    width: 47px;
+    /* Adjust the width as needed */
+    height: 250px;
+    /* Adjust the height as needed */
+    background-color: white;
+    border: 3px solid black;
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Ensures;
+    color: Red;
+    margin: 15px 1px;
+    box-sizing: border-box;
+    /* Ensures that the border width is included in the total width and height */
+}
+
+.active {
+    background: linear-gradient(to top, rgb(199, 29, 29), white);
+}
+
+#rand {
+    font-style: italic;
+}
+
+button {
+    padding: 7px 14px;
+    color: Red;
+    background-color: black;
+    font-family: Tahoma;
+    font-size: 16px;
+}
+
+.recording {
+    font-style: italic;
+    font-weight: 900;
+}
+
+#rec {
+    margin-right: 10px;
+
+}
+
+li {
+    white-space: nowrap;
+}
+
+#database {
+    margin-top: 30px;
+}
+/* Custom table styling */
+#recordingsTable {
+    border-collapse: collapse;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4); /* Soft shadow around the table */
+    border-radius: 1rem; /* Rounded corners */
+}
+
+/* Header styling */
+#recordingsTable thead th {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+}
+
+/* Button styling within the table */
+#recordingsTable button {
+    border: none;
+    border-radius: 0.25rem;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer; /* Hand icon on hover */
+}
+
+/* Specific button colors */
+.play-btn { background-color: #28a745; } /* Bootstrap success color */
+.rename-btn { background-color: #17a2b8; } /* Bootstrap info color */
+.delete-btn { background-color: #dc3545; } /* Bootstrap danger color */
+
+/* Hover effect for buttons */
+#recordingsTable button:hover {
+    background-color: rgb(0,40,40);
+    color: red;
+}
