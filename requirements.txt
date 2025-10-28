@@ -1,2 +1,4 @@
 Flask
-Gunicorn
+python-telegram-bot
+yt-dlp
+gunicorn
