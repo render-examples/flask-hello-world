@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='protected_area.css') }}">
+    <title>Studsight - Dashboard</title>
+   
+</head>
+<body>
+    <div class="first">
+        <div class ="message">
+            <p>Message</p>
+            <h1>Welcome to the Protected Area</h1>
+            <button class="signout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Log out</button>
+        </div>
+
+        <div class ="student">
+            <p>Student</p>
+            <h1>Welcome to the Protected Area</h1>
+            <button class="signout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Log out</button>
+        </div>
+    </div>
+
+    <div class="second">
+        <div class ="analysis">
+            <p>Analysis</p>
+            <h1>Welcome to the Protected Area</h1>
+            <button class="signout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Log out</button>
+        </div>
+
+        <div class ="ss-generator">
+            <p>generator</p>
+            <h1>Welcome to the Protected Area</h1>
+            <button class="signout-btn" onclick="window.location.href='{{ url_for('logout') }}'">Log out</button>
+        </div>
+    </div>
+
+</body>
+</html>

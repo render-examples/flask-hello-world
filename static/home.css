@@ -1,0 +1,171 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f4f6fb 100%);
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* .main-container {
+    max-width: 1500px;
+    width: 1500px;
+    margin: 0 auto;
+} */
+
+
+.container {
+    background-image: url('school2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 2.5rem 3.5rem;
+    border-radius: 18px;
+    box-shadow: 0 6px 32px rgba(79,140,255,0.10), 0 1.5px 6px rgba(0,0,0,0.06);
+    text-align: align;
+    position: relative;
+    z-index: 2;
+    max-width: 85vw;
+    width: 85vw;
+}
+
+
+h1 {
+    margin-bottom: 1.2rem;
+    color: #2d3a4b;
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+}
+.subtitle {
+    color: #f5981e;
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+}
+.signin-btn {
+    background: linear-gradient(90deg, #4f8cff 60%, #6ee7b7 100%);
+    color: #fff;
+    position: relative;
+    left: 80%;
+    align-items: right;
+    size: max-content;
+    height: 5vw;
+    width: 15vw;
+    border: none;
+    padding: 0.9rem 2.5rem;
+    border-radius: 8px;
+    font-size: 2rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(79,140,255,0.10);
+    transition: background 0.2s, transform 0.2s;
+}
+.signin-btn:hover {
+    background: linear-gradient(90deg, #376fd0 60%, #34d399 100%);
+    transform: translateY(-2px) scale(1.04);
+}
+.hero-img {
+    width: max-content;
+    max-width: 80vw;
+    left: 75%;
+    position: relative;
+    align-self: right;
+    margin-bottom: 0rem;
+    filter: drop-shadow(0 4px 16px rgba(79,140,255,0.12));
+}
+
+.hero {
+    position: relative;
+    bottom: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+    text-align: right;
+}
+
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: right;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    width: 100%;
+}
+.feature-card {
+    background: #f0f7ff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(79,140,255,0.07);
+    padding: 1.2rem 1.5rem;
+    position: relative;
+    width: 10vw;
+    max-width: 90vw;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.feature-card:hover {
+    box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+    transform: translateY(-4px) scale(1.03);
+}
+.feature-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.7rem;
+}
+@media (max-width: 700px) {
+    .container {
+        padding: 1.2rem 0.5rem;
+        width: 98vw;
+        max-width: 98vw;
+    }
+    .features {
+        flex-direction: column;
+        gap: 1.2rem;
+        width: 100%;
+    }
+    .feature-card {
+        width: 100%;
+        max-width: 98vw;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    .subtitle {
+        font-size: 1rem;
+    }
+    .signin-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 1rem;
+    }
+    .hero-img {
+        width: 120px;
+        max-width: 80vw;
+    }
+    .container {
+        padding: 0.5rem 0.1rem;
+        width: 99vw;
+        max-width: 99vw;
+    }
+    .feature-card {
+        padding: 0.7rem 0.5rem;
+    }
+    h1 {
+        font-size: 1.3rem;
+    }
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    .hero-img {
+        width: 80px;
+    }
+}
+
+.background-svg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+}

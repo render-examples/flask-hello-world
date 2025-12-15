@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <title>StudSight - Home</title>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <img class="hero-img" src="https://img.icons8.com/color/344/classroom.png" alt="Classroom graphic" />
+            <h1>Welcome to StudSight</h1>
+            <div class="subtitle">Encouraging teacher collaboration to help Students' learn.<br>Collaboration & Insight for Modern Classrooms.</div>
+        </div>
+        <div class="signin-btn">
+            <button  onclick="window.location.href='{{ url_for('login') }}'">Sign In</button>
+            <button onclick="window.location.href='{{ url_for('autho') }}'">dev in</button>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <span class="feature-icon">👩‍🏫</span>
+                <strong>Teacher Collaboration</strong>
+                <div>Share resources, strategies, and feedback with fellow educators.</div>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <strong>Student Insights</strong>
+                <div>Track student progress and identify learning trends with ease.</div>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <strong>Secure & Private</strong>
+                <div>All data is protected with top-tier security and privacy standards.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
