@@ -5,15 +5,57 @@ body {
     margin: 0;
     padding: 0;
 }
-.container {
+
+
+
+.message {
+    margin-top: 10%;
+    position: absolute;
+    left: 20%;
     max-width: 400px;
-    margin: 80px auto;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     padding: 32px 24px;
-    text-align: center;
 }
+
+.student {
+    margin-top: 10%;
+    position: absolute;
+    left: 60%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+}
+
+
+.analysis {
+    position: absolute;
+    left: 20%;
+    top: 60%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+}
+
+
+.ss-generator {
+    position: absolute;
+    top: 60%;
+    left: 60%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+}
+
+
+
 h1 {
     color: #333;
     margin-bottom: 24px;
@@ -31,3 +73,4 @@ h1 {
 .signout-btn:hover {
     background: #c0392b;
 }
+

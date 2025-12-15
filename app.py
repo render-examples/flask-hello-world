@@ -83,9 +83,10 @@ def home():
 
 #Protected area route, only accessibl after login
 @app.route("/protected_area") # This is where the people who have access to the app will go to after loggin in to view the app's main content
-@login_is_required
+#@login_is_required
 def protected_area():
-    return render_template("protected_area.html", email=session["google_id"])
+    return render_template("protected_area.html") #, email=session["google_id"]
+
 
 
 if __name__ == "__main__": # Run the app

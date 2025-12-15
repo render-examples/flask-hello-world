@@ -11,7 +11,10 @@
             <h1>Welcome to StudSight</h1>
             <div class="subtitle">Encouraging teacher collaboration to help Students' learn.<br>Collaboration & Insight for Modern Classrooms.</div>
         </div>
-        <button class="signin-btn" onclick="window.location.href='{{ url_for('login') }}'">Sign In</button>
+        <div class="signin-btn">
+            <button  onclick="window.location.href='{{ url_for('login') }}'">Sign In</button>
+            <button onclick="window.location.href='{{ url_for('autho') }}'">dev in</button>
+        </div>
         
         <div class="features">
             <div class="feature-card">
