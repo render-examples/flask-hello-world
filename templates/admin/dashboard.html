@@ -1,0 +1,13 @@
+{% extends "./layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% set toptitle = "Dashboard" %}
+{% set quickbuttons=[{"title":"New","path":"/admin/categories","icon":""}] %}
+{% block content %}
+<section class="mx-3 my-2">
+    {% if person %}
+    <h1>Hello {{ person }}!</h1>
+    {% else %}
+    <h1>Hello, World!</h1>
+    {% endif %}
+</section>
+{% endblock %}

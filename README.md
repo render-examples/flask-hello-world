@@ -7,3 +7,20 @@ The app in this repo is deployed at [https://flask.onrender.com](https://flask.o
 ## Deployment
 
 Follow the guide at https://render.com/docs/deploy-flask.
+
+
+# Create Venv
+
+```
+py -m venv .venv
+cd .venv\Script\activate
+```
+#Istall package using requirement file
+
+```
+pip install -r requirements.txt
+```
+
+#Run the flask Application
+
+flask --app app run --debug

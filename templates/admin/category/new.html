@@ -1,0 +1,28 @@
+{% extends "./layout.html" %}
+{% block title %}New Category{% endblock %}
+{% set toptitle = "Categories" %}
+{% set quickbuttons=[{"title":"Categories","path":"/admin/categories","icon":""}] %}
+{% block content %}
+<section class="mx-3 my-2" style="overflow-x: auto;">
+    <div class="container col-md-8 g-2">
+        <h1>Add Category</h1>
+        <form action="/admin/categories/new" method="post">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">Category</label>
+                <input type="text" name="name" class="form-control" id="exampleFormControlInput1"
+                    placeholder="Javascript">
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Status</label>
+                <select class="form-control" name="status">
+                    <option value="0">Disable</option>
+                    <option value="1" selected>Enable</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <input type="submit" value="submit" class="form-control"/>
+            </div>
+        </form>
+    </div>
+</section>
+{%endblock %}

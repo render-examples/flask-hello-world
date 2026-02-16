@@ -1,0 +1,32 @@
+{% extends "./layout.html" %}
+{% block title %}New Category{% endblock %}
+{% set toptitle = "Categories" %}
+{% set quickbuttons=[{"title":"New","path":"/admin/categories/new","icon":""}] %}
+
+{% block content %}
+<div class="container">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Category</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in category %}
+        <tr>
+            <th scope="row">{{i}}</th>
+            <td>{{item["name"]}}</td>
+            <td>
+                {{ "Publish" if item["name"]==1 else "Disabled" }}
+            </td>
+            <td><a href="#">Edit</a> <a href="#">Delete</a></td>
+        </tr>
+        {% endfor %}
+        </tr>
+    </tbody>
+</table>
+</div>
+{% endblock %}
